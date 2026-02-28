@@ -1,20 +1,18 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
 // 1. Table for Contact Form Inquiries
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-
 export const inquiries = sqliteTable('inquiries', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	name: text('name').notNull(),
 	email: text('email').notNull(),
-	ageGroup: text('age_group'), // Added for Artium style
-	interest: text('interest').notNull(), // Solo, Karnas, etc.
+	ageGroup: text('age_group'),
+	interest: text('interest').notNull(),
 	message: text('message'),
 	status: text('status').$default(() => 'New'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
-// 2. Essential tables for Better Auth (Standard requirement)
+// 2. Essential tables for Better Auth
 export const user = sqliteTable('user', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
