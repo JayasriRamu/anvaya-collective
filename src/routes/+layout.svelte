@@ -44,8 +44,8 @@
 			</div>
 			<a
 				href="/contact"
-				class="px-10 py-3 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl transition-all active:scale-95
-    {page.url.pathname === '/contact'
+				class="    px-10 py-3 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl
+transition-all active:scale-95 {page.url.pathname === '/contact'
 					? 'border border-white bg-transparent text-white hover:bg-white hover:text-black'
 					: 'bg-yellow-500 text-black hover:bg-white'}">Inquire</a
 			>
@@ -56,7 +56,7 @@
 		class="fixed top-1/2 right-8 z-[90] hidden -translate-y-1/2 flex-col items-center space-y-8 md:flex"
 	>
 		<a
-			href="https://youtube.com"
+			href="https://www.youtube.com/@anvaya.tattvum"
 			target="_blank"
 			class="text-blue-500 transition-all hover:scale-125 hover:text-red-600"
 		>
@@ -78,7 +78,7 @@
 			>
 		</a>
 		<a
-			href="https://facebook.com"
+			href="https://facebook.com/anvayacollectives"
 			target="_blank"
 			class="text-blue-500 transition-all hover:scale-125 hover:text-blue-600"
 		>
