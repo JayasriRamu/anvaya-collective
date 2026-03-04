@@ -30,7 +30,9 @@
 		</a>
 	</div>
 
-	<div class="pointer-events-none absolute top-0 right-0 h-full w-full opacity-60 md:w-3/5">
+	<div
+		class="pointer-events-none absolute top-0 right-0 hidden h-full w-full opacity-60 md:block md:w-3/5"
+	>
 		<img
 			src="/images/background-hero.jpg"
 			alt="Dancer Background"
