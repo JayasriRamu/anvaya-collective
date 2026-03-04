@@ -9,7 +9,7 @@
 		<img
 			src="/images/main-dancer.jpg"
 			alt="Artistic Director"
-			class="w-64 rounded-sm border border-white/10 object-cover shadow-2xl md:w-80"
+			class="w-64 rounded-3xl border border-white/10 object-cover shadow-2xl md:w-80"
 		/>
 	</div>
 

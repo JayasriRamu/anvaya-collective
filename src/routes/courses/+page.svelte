@@ -1,5 +1,4 @@
 <script>
-	// Course data structure for easy future expansion
 	const courses = [
 		{
 			title: 'Mastering Karnas',
@@ -26,21 +25,16 @@
 		<h1 class="mb-16 font-serif text-5xl tracking-tighter text-white uppercase italic md:text-7xl">
 			Our Courses
 		</h1>
-
 		<div class="grid gap-8 md:grid-cols-2">
 			{#each courses as course}
 				<div
 					class="border border-white/10 bg-white/5 p-8 transition-all hover:border-yellow-500/50 hover:bg-yellow-500/5"
 				>
-					<h2 class="mb-4 font-serif text-2xl text-yellow-500 uppercase italic">
-						{course.title}
-					</h2>
-					<p class="text-sm leading-relaxed font-light text-gray-300">
-						{course.description}
-					</p>
+					<h2 class="mb-4 font-serif text-2xl text-yellow-500 uppercase italic">{course.title}</h2>
+					<p class="text-sm leading-relaxed font-light text-gray-300">{course.description}</p>
 					<a
 						href="/contact"
-						class="mt-6 inline-block text-[10px] font-black tracking-[0.2em] text-blue-500 uppercase hover:underline"
+						class="mt-6 inline-block text-xs font-black tracking-[0.2em] text-white uppercase transition-all duration-300 hover:text-yellow-500 hover:underline"
 					>
 						Inquire Now →
 					</a>

@@ -1,3 +1,14 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+/* Force links to respect Tailwind utility classes by removing plugin defaults */
+/*nav a {
+	font-weight: inherit !important;
+	text-decoration: none !important;
+}*/
+
+/* Ensure the hover state is visually distinct by overriding default browser link behavior */
+/*nav a:hover {
+	color: white !important;
+}*/
