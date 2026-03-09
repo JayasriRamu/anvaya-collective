@@ -19,9 +19,14 @@
 		>
 			ANVAYA <br /> COLLECTIVE
 		</h1>
-		<p class="mb-10 text-sm font-light tracking-[0.4em] text-gray-300 uppercase md:text-xl">
-			Choreography • Karnas • Heritage
-		</p>
+
+		<div class="mb-10 text-[10px] font-light tracking-[0.2em] text-gray-300 uppercase md:text-sm">
+			<p class="mb-2">Choreography • Bharatanatyam • Natya Sastra • Music • Storytelling</p>
+			<p class="mt-2 text-[10px] text-gray-400 italic md:text-xs">
+				Beyond the stage (Strength, cardio, and emotional elevation through the lens of tradition.)
+			</p>
+		</div>
+
 		<a
 			href="/contact"
 			class="inline-block bg-yellow-500 px-12 py-4 text-sm font-black tracking-widest text-black uppercase shadow-xl transition-all hover:bg-white"

@@ -20,89 +20,94 @@
 				</p>
 			</div>
 
-			{#if form?.success}
-				<div
-					in:fly={{ y: 20 }}
-					class="rounded-lg border border-[#C5A059]/20 bg-[#C5A059]/5 p-8 text-center"
-				>
-					<h2 class="mb-2 font-serif text-2xl text-white italic">Thank you</h2>
-					<p class="text-sm text-gray-400">Your inquiry has been received.</p>
+			<form method="POST" class="space-y-8">
+				<div class="group space-y-2">
+					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+						>Full Name</label
+					>
+					<input
+						name="name"
+						type="text"
+						required
+						class="w-full border-b border-gray-500 bg-transparent py-3 text-lg text-white placeholder-gray-500 outline-none focus:border-[#C5A059]"
+						placeholder="Enter your name"
+					/>
 				</div>
-			{:else}
-				<form method="POST" class="space-y-8">
-					<div class="group space-y-2">
-						<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
-							>Full Name</label
-						>
+
+				<div class="group space-y-2">
+					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+						>WhatsApp Number</label
+					>
+					<div class="flex items-center border-b border-gray-500 focus-within:border-[#C5A059]">
+						<span class="pr-2 text-lg text-gray-400">+91</span>
 						<input
-							name="name"
-							type="text"
+							name="mobile"
+							type="tel"
+							maxlength="10"
 							required
-							class="w-full border-b border-gray-500 bg-transparent py-3 text-lg text-white placeholder-gray-500 outline-none focus:border-[#C5A059]"
-							placeholder="Enter your name"
+							oninput={validateMobile}
+							class="w-full bg-transparent py-3 text-lg text-white placeholder-gray-500 outline-none"
+							placeholder="00000 00000"
 						/>
 					</div>
+				</div>
 
-					<div class="group space-y-2">
-						<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
-							>WhatsApp Number</label
-						>
-						<div class="flex items-center border-b border-gray-500 focus-within:border-[#C5A059]">
-							<span class="pr-2 text-lg text-gray-400">+91</span>
-							<input
-								name="mobile"
-								type="tel"
-								maxlength="10"
-								required
-								oninput={validateMobile}
-								class="w-full bg-transparent py-3 text-lg text-white placeholder-gray-500 outline-none"
-								placeholder="00000 00000"
-							/>
-						</div>
-					</div>
-
-					<div class="space-y-3">
-						<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
-							>Age Group</label
-						>
-						<div class="flex flex-wrap gap-2">
-							{#each ['6-12', '13-21', '22-30', '31-40', '40+'] as age}
-								<label>
-									<input type="radio" name="ageGroup" value={age} class="peer sr-only" required />
-									<span
-										class="block cursor-pointer rounded-full border border-gray-500 px-5 py-2 text-[11px] font-medium text-gray-400 peer-checked:border-[#C5A059] peer-checked:text-[#C5A059] hover:border-gray-300"
-									>
-										{age}
-									</span>
-								</label>
-							{/each}
-						</div>
-					</div>
-
-					<div class="group space-y-2">
-						<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
-							>Area of Interest</label
-						>
-						<select
-							name="interest"
-							required
-							class="w-full appearance-none border-b border-gray-500 bg-[#121212] py-3 text-lg text-white outline-none focus:border-[#C5A059]"
-						>
-							<option value="" disabled selected class="text-gray-500">Select interest</option>
-							<option value="Choreography">Choreography</option>
-							<option value="Karnas">Karnas</option>
-							<option value="Natya Shastra">Natya Shastra</option>
-						</select>
-					</div>
-
-					<button
-						type="submit"
-						class="w-full bg-[#C5A059] py-4 text-xs font-black tracking-[0.3em] text-black uppercase transition-all hover:bg-white active:scale-[0.98]"
+				<div class="space-y-3">
+					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+						>Age Group</label
 					>
-						Submit
-					</button>
-				</form>
-			{/if}
+					<div class="flex flex-wrap gap-2">
+						{#each ['6-12', '13-21', '22-30', '31-40', '40+'] as age}
+							<label>
+								<input type="radio" name="ageGroup" value={age} class="peer sr-only" required />
+								<span
+									class="block cursor-pointer rounded-full border border-gray-500 px-5 py-2 text-[11px] font-medium text-gray-400 transition-colors peer-checked:border-[#C5A059] peer-checked:text-[#C5A059] hover:border-gray-300"
+								>
+									{age}
+								</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="group space-y-2">
+					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+						>Area of Interest</label
+					>
+					<select
+						name="interest"
+						required
+						class="w-full appearance-none border-b border-gray-500 bg-[#121212] py-3 text-lg text-white outline-none focus:border-[#C5A059]"
+					>
+						<option value="" disabled selected class="text-gray-500">Select interest</option>
+						<option value="Choreography">Choreography</option>
+						<option value="Bharatanatyam (Kalashetra Style)"
+							>Bharatanatyam (Kalashetra Style)</option
+						>
+						<option value="Natya Sastra (A complete teaching by Bharatha Muni)"
+							>Natya Sastra (A complete teaching by Bharatha Muni)</option
+						>
+						<option value="Others">Others</option>
+					</select>
+				</div>
+				<div class="group space-y-2">
+					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+						>Your Message</label
+					>
+					<textarea
+						name="message"
+						rows="4"
+						class="w-full border-b border-gray-500 bg-transparent py-3 text-lg text-white placeholder-gray-500 outline-none focus:border-[#C5A059]"
+						placeholder="How can we help?"
+					></textarea>
+				</div>
+				<button
+					type="submit"
+					class="w-full bg-[#C5A059] py-4 text-xs font-black tracking-[0.3em] text-black uppercase transition-all hover:bg-white active:scale-[0.98]"
+				>
+					Submit
+				</button>
+			</form>
 		</div>
 	</div>
 
