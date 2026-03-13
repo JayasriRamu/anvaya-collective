@@ -3,10 +3,7 @@
 	import { page } from '$app/state';
 	import type { LayoutData } from './$types';
 
-	// Updated to accept 'data' from your load function
 	let { data, children }: { data: LayoutData; children: any } = $props();
-
-	// State for mobile menu
 	let isMenuOpen = $state(false);
 
 	function toggleMenu() {
@@ -16,32 +13,34 @@
 
 <div class="relative flex min-h-screen flex-col overflow-x-hidden bg-[#121212] text-white">
 	<nav
-		class="fixed top-0 z-[100] flex w-full items-center justify-between border-b border-white/5 bg-[#121212]/90 px-8 py-6 backdrop-blur-md md:px-16 md:py-10"
+		class="fixed top-0 z-[100] flex w-full items-center justify-between border-b border-white/5 bg-[#121212]/90 px-4 py-5 backdrop-blur-md md:px-16 md:py-10"
 	>
-		<a href="/" class="group flex items-center gap-4">
-			<img
-				src="/images/logo.png"
-				alt="Anvaya Collective"
-				class="h-10 w-auto object-contain transition-transform group-hover:scale-105 md:h-14"
-			/>
-			<div class="font-serif text-xl tracking-[0.2em] text-[#C5A059] uppercase">
+		<a href="/" class="group flex items-center gap-3">
+			<img src="/images/logo.png" alt="Logo" class="h-8 w-auto object-contain md:h-14" />
+			<div
+				class="font-serif text-[13px] tracking-[0.1em] whitespace-nowrap text-[#C5A059] uppercase md:text-xl md:tracking-[0.2em]"
+			>
 				Anvaya Collective
 			</div>
 		</a>
 
-		<div class="hidden items-center space-x-12 md:flex">
-			<div class="flex items-center space-x-10">
-				{#if data.stats && data.stats.views > 0}
-					<div class="flex flex-col border-r border-white/10 pr-10 text-right">
-						<span class="text-[9px] tracking-[0.2em] text-[#C5A059] uppercase">
-							Visit #{data.stats.views + 1}
-						</span>
-						<span class="text-[8px] tracking-[0.1em] text-gray-500 uppercase">
-							Last: {data.stats.lastVisit}
-						</span>
-					</div>
-				{/if}
+		<div class="flex items-center gap-4">
+			{#if data.stats && data.stats.views > 0}
+				<div class="flex flex-col items-end pr-2 text-right md:hidden">
+					<span class="text-[9px] font-bold text-[#C5A059] uppercase"
+						>V #{data.stats.views + 1}</span
+					>
+				</div>
 
+				<div class="hidden flex-col items-end border-r border-white/10 pr-8 text-right md:flex">
+					<span class="text-[9px] tracking-[0.2em] text-[#C5A059] uppercase"
+						>Visit #{data.stats.views + 1}</span
+					>
+					<span class="text-[8px] text-gray-500 uppercase">Last: {data.stats.lastVisit}</span>
+				</div>
+			{/if}
+
+			<div class="hidden items-center space-x-10 lg:flex">
 				<a
 					href="/"
 					class="text-xs tracking-[0.2em] uppercase {page.url.pathname === '/'
@@ -66,35 +65,39 @@
 						? 'font-black text-white'
 						: 'font-medium text-gray-400 hover:text-yellow-500'}">Courses</a
 				>
+				<a
+					href="/contact"
+					class="bg-[#C5A059] px-6 py-2 text-[10px] font-black text-black uppercase hover:bg-[#A88748]"
+					>Connect</a
+				>
 			</div>
 
-			<a
-				href="/contact"
-				class="px-10 py-3 text-xs font-black tracking-[0.2em] uppercase shadow-xl transition-all active:scale-95 {page
-					.url.pathname === '/contact'
-					? 'border border-[#C5A059] bg-transparent text-[#C5A059] hover:bg-[#C5A059] hover:text-black'
-					: 'bg-[#C5A059] text-black hover:bg-[#A88748]'}"
-			>
-				Connect
-			</a>
+			<button class="p-2 text-white lg:hidden" onclick={toggleMenu}>
+				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M4 6h16M4 12h16m-7 6h7"
+					></path></svg
+				>
+			</button>
 		</div>
-
-		<button class="p-2 text-white md:hidden" onclick={toggleMenu} aria-label="Toggle Menu">
-			<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M4 6h16M4 12h16m-7 6h7"
-				></path></svg
-			>
-		</button>
 	</nav>
 
 	{#if isMenuOpen}
 		<div
-			class="fixed inset-0 z-[90] flex flex-col items-center justify-center gap-8 bg-[#121212] pt-20 md:hidden"
+			class="fixed inset-0 z-[101] flex flex-col items-center justify-center gap-6 bg-[#121212] px-8 text-center md:hidden"
 		>
+			{#if data.stats && data.stats.views > 0}
+				<div class="mb-4 w-full max-w-[200px] border-b border-white/10 pb-6">
+					<p class="text-[11px] font-bold tracking-[0.3em] text-[#C5A059] uppercase">
+						Welcome Back
+					</p>
+					<p class="mt-2 text-[9px] text-gray-400 uppercase">Visit Count: {data.stats.views + 1}</p>
+					<p class="mt-1 text-[8px] text-gray-600 uppercase">Last: {data.stats.lastVisit}</p>
+				</div>
+			{/if}
 			<a href="/" class="font-serif text-2xl tracking-widest uppercase" onclick={toggleMenu}>Home</a
 			>
 			<a href="/about" class="font-serif text-2xl tracking-widest uppercase" onclick={toggleMenu}
@@ -108,8 +111,11 @@
 			>
 			<a
 				href="/contact"
-				class="bg-yellow-500 px-10 py-4 text-xs font-black tracking-[0.2em] text-black uppercase"
+				class="mt-4 w-full bg-[#C5A059] py-4 text-xs font-black text-black uppercase"
 				onclick={toggleMenu}>Connect</a
+			>
+			<button class="mt-8 text-[10px] tracking-widest text-gray-500 uppercase" onclick={toggleMenu}
+				>Close</button
 			>
 		</div>
 	{/if}
@@ -121,13 +127,11 @@
 	<footer class="mt-auto border-t border-white/5 px-8 py-10 md:px-16">
 		<div class="grid grid-cols-1 items-center gap-8 md:grid-cols-3">
 			<div class="hidden md:block"></div>
-
 			<div class="flex items-center justify-center gap-6">
 				<a
 					href="https://www.youtube.com/@anvaya.tattvum"
 					target="_blank"
-					aria-label="YouTube"
-					class="text-gray-400 transition-all hover:scale-110 hover:text-red-600"
+					class="text-gray-400 hover:text-red-600"
 				>
 					<svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"
 						><path
@@ -135,23 +139,17 @@
 						/></svg
 					>
 				</a>
-				<a
-					href="https://instagram.com"
-					target="_blank"
-					aria-label="Instagram"
-					class="text-gray-400 transition-all hover:scale-110 hover:text-pink-500"
-				>
+				<a href="https://instagram.com" target="_blank" class="text-gray-400 hover:text-pink-500">
 					<svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"
 						><path
-							d="M12 2.163c3.204 0 3.584.012 4.85.07 1.266.058 1.644.07 4.849.07 3.205 0 3.584-.012 4.849-.07 1.266-.058 1.644-.07 4.849-.07 3.205 0 3.584-.012 4.849-.07 1.266-.058 1.644-.07 4.849.07 3.205 0 3.584-.012 4.849-.07 1.266-.058 1.644-.07 4.849.07 3.205 0 3.584.012 4.849.07.058 1.266.07 1.644.07 4.849 0 3.205-.012 3.584-.07 4.849-.058 1.266-.07 1.644-.07 4.849 0 3.205.012 3.584.07 4.849.058 1.266.07 1.644.07 4.849zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6.5-11.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+							d="M12 2.163c3.204 0 3.584.012 4.85.07 1.266.058 1.644.07 4.849.07 3.205 0 3.584-.012 4.849-.07 1.266-.058 1.644-.07 4.849-.07 3.205 0 3.584-.012 4.849-.07 1.266-.058 1.644-.07 4.849.07 3.205 0 3.584.012 4.849.07.058 1.266.07 1.644.07 4.849 0 3.205-.012 3.584-.07 4.849-.058 1.266-.07 1.644-.07 4.849 0 3.205.012 3.584.07 4.849.058 1.266.07 1.644.07 4.849zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6.5-11.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
 						/></svg
 					>
 				</a>
 				<a
 					href="https://facebook.com/anvayacollectives"
 					target="_blank"
-					aria-label="Facebook"
-					class="text-gray-400 transition-all hover:scale-110 hover:text-blue-600"
+					class="text-gray-400 hover:text-blue-600"
 				>
 					<svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"
 						><path
@@ -162,8 +160,7 @@
 				<a
 					href="https://wa.me/918073536708"
 					target="_blank"
-					aria-label="WhatsApp"
-					class="text-gray-400 transition-all hover:scale-110 hover:text-green-500"
+					class="text-gray-400 hover:text-green-500"
 				>
 					<svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"
 						><path
@@ -172,16 +169,11 @@
 					>
 				</a>
 			</div>
-
 			<div
-				class="flex flex-col items-center gap-1 text-xs font-medium tracking-[0.15em] text-gray-300 uppercase md:items-end"
+				class="flex flex-col items-center gap-1 text-[10px] font-medium tracking-[0.15em] text-gray-300 uppercase md:items-end"
 			>
-				<a href="mailto:anvaya@tattvum.com" class="transition-colors hover:text-yellow-500"
-					>anvaya@tattvum.com</a
-				>
-				<a href="tel:+918073536708" class="transition-colors hover:text-yellow-500"
-					>+91 - 80735 36708</a
-				>
+				<a href="mailto:anvaya@tattvum.com" class="hover:text-yellow-500">anvaya@tattvum.com</a>
+				<a href="tel:+918073536708" class="hover:text-yellow-500">+91 - 80735 36708</a>
 			</div>
 		</div>
 	</footer>

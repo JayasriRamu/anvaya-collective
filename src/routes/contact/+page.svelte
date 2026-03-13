@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 	let { form } = $props();
 
 	function validateMobile(event: Event) {
@@ -8,7 +8,52 @@
 	}
 </script>
 
-<div class="flex min-h-screen w-full flex-col bg-[#121212] font-sans text-white md:flex-row">
+<div
+	class="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans text-white md:flex-row"
+>
+	{#if form?.success}
+		<div
+			transition:fade={{ duration: 300 }}
+			class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-6 backdrop-blur-sm"
+		>
+			<div
+				transition:fly={{ y: 20, duration: 500 }}
+				class="w-full max-w-sm border border-[#C5A059]/30 bg-[#1A1A1A] p-10 text-center shadow-2xl"
+			>
+				<div class="mb-6 flex justify-center">
+					<div
+						class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#C5A059] text-[#C5A059]"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-8 w-8"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
+					</div>
+				</div>
+				<h2 class="font-serif text-3xl text-white italic">Thank You</h2>
+				<p class="mt-4 text-[11px] leading-relaxed tracking-[0.2em] text-gray-400 uppercase">
+					Your message has been received. We will connect with you on WhatsApp shortly.
+				</p>
+				<a
+					href="/"
+					class="mt-8 inline-block w-full bg-[#C5A059] py-4 text-[10px] font-black tracking-[0.3em] text-black uppercase transition-all hover:bg-white"
+				>
+					Back to Home
+				</a>
+			</div>
+		</div>
+	{/if}
+
 	<div class="flex w-full items-center justify-center px-8 py-16 md:w-1/2 md:py-24">
 		<div class="w-full max-w-md">
 			<div class="mb-10 text-center md:text-left">
@@ -22,7 +67,9 @@
 
 			<form method="POST" class="space-y-8">
 				<div class="group space-y-2">
-					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+					<label
+						for="name"
+						class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
 						>Full Name</label
 					>
 					<input
@@ -35,7 +82,9 @@
 				</div>
 
 				<div class="group space-y-2">
-					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+					<label
+						for="mobile"
+						class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
 						>WhatsApp Number</label
 					>
 					<div class="flex items-center border-b border-gray-500 focus-within:border-[#C5A059]">
@@ -71,7 +120,9 @@
 				</div>
 
 				<div class="group space-y-2">
-					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+					<label
+						for="interest"
+						class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
 						>Area of Interest</label
 					>
 					<select
@@ -90,8 +141,11 @@
 						<option value="Others">Others</option>
 					</select>
 				</div>
+
 				<div class="group space-y-2">
-					<label class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
+					<label
+						for="message"
+						class="block text-[11px] font-bold tracking-[0.2em] text-gray-200 uppercase"
 						>Your Message</label
 					>
 					<textarea
@@ -101,6 +155,7 @@
 						placeholder="How can we help?"
 					></textarea>
 				</div>
+
 				<button
 					type="submit"
 					class="w-full bg-[#C5A059] py-4 text-xs font-black tracking-[0.3em] text-black uppercase transition-all hover:bg-white active:scale-[0.98]"
