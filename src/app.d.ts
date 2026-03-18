@@ -6,6 +6,9 @@ declare global {
 				views: number;
 				lastVisit: string;
 			};
+			// Add this line to handle the form submission status
+			userMobile: string | null;
+			formSubmitted: boolean;
 		}
 	}
 }

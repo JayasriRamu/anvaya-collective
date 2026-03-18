@@ -1,91 +1,116 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 </script>
 
-<div class="min-h-screen bg-[#121212] text-white">
+<div class="min-h-screen bg-[#121212] font-sans text-white">
 	<section
-		class="relative flex h-[60vh] items-center justify-center overflow-hidden border-b border-white/5"
+		class="relative flex h-[75vh] items-end justify-center overflow-hidden border-b border-white/5 pb-12"
 	>
-		<div class="absolute inset-0 opacity-40">
+		<div class="absolute inset-0">
 			<img
 				src="/images/background-hero.jpg"
-				alt="Alamelu Sethuraman"
-				class="h-full w-full object-cover object-[center_10%]"
+				alt="Anvaya Collectives Artistic Director"
+				class="h-full w-full object-cover object-[center_12%] opacity-100 brightness-105"
 			/>
 			<div
-				class="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-[#121212]/40"
+				class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/40 to-transparent"
 			></div>
 		</div>
-		<div class="relative z-10 px-6 text-center" in:fly={{ y: 20, duration: 1000 }}>
-			<h2 class="mb-4 text-[10px] font-bold tracking-[0.4em] text-yellow-500 uppercase">
-				Anvaya Collectives
+
+		<div class="relative z-10 px-6 text-center" in:fly={{ y: 30, duration: 1000 }}>
+			<h2 class="mb-2 text-[10px] font-bold tracking-[0.5em] text-[#C5A059] uppercase">
+				Institute of Classical Arts
 			</h2>
-			<h1 class="font-serif text-4xl leading-tight italic md:text-7xl">
-				THE ARCHITECTURE <br /> OF MOVEMENT
+			<h1 class="font-serif text-5xl leading-tight italic drop-shadow-lg md:text-7xl">
+				ABOUT ANVAYA
 			</h1>
-			<p class="mt-4 text-[10px] font-light tracking-[0.5em] text-gray-400 uppercase md:text-xs">
-				A Masterclass in Choreography
+			<p class="mt-4 text-[10px] font-light tracking-[0.4em] text-white uppercase">
+				Connection • Lineage • Evolution
 			</p>
 		</div>
 	</section>
 
-	<section class="mx-auto max-w-7xl px-6 py-20 md:px-12">
-		<div class="grid gap-12 md:grid-cols-[280px_1fr] md:gap-20">
-			<aside class="space-y-12">
-				<div class="relative border-l border-yellow-500/50 pl-6">
-					<h3 class="mb-4 text-[10px] font-bold tracking-[0.4em] text-yellow-500 uppercase">
-						Artistic Director
-					</h3>
-					<h2
-						class="font-serif text-3xl leading-tight tracking-tighter text-white uppercase md:text-4xl"
-					>
-						Alamelu <br /> Sethuraman
-					</h2>
-					<div class="mt-6 space-y-2 border-t border-white/10 pt-6">
-						<p class="text-[10px] font-light tracking-[0.3em] text-gray-400 uppercase">
-							M.A. Bharatanatyam
+	<section class="mx-auto max-w-6xl px-8 py-24">
+		<div class="grid gap-16 md:grid-cols-2">
+			<div class="space-y-8" in:fade={{ delay: 300, duration: 1000 }}>
+				<h3 class="text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">
+					The Significance
+				</h3>
+				<h2 class="font-serif text-4xl leading-tight text-white italic">Why "Anvaya"?</h2>
+
+				<p class="text-xl leading-relaxed font-light text-gray-300">
+					Anvaya Collectives is a <span class="font-medium text-white">premier institute</span> dedicated
+					to the preservation and evolution of Bharatanatyam and Carnatic Music.
+				</p>
+
+				<p class="leading-relaxed text-gray-400">
+					The word <span class="font-medium text-[#C5A059] italic">"Anvaya"</span> signifies connection
+					and lineage. True to its name, our mission is to foster a deep connection between the artist
+					and the art form. The institute serves as a bridge between the ancient wisdom of the Kalakshetra
+					Bani and modern artistic inquiry.
+				</p>
+			</div>
+
+			<div class="space-y-12" in:fade={{ delay: 600, duration: 1000 }}>
+				<div class="rounded-sm border border-white/10 bg-white/[0.03] p-10 shadow-2xl">
+					<p class="mb-8 font-serif text-lg leading-relaxed text-gray-300 italic">
+						"At Anvaya Collectives, we believe that dance is a holistic discipline where rhythm,
+						melody, and expression converge to tell timeless stories."
+					</p>
+
+					<div class="space-y-6 text-sm leading-relaxed text-gray-400">
+						<p>
+							We go beyond mere performance, delving into the <span class="text-white"
+								>kinetics of movement</span
+							>
+							and the scientific aesthetics of
+							<span class="font-bold text-[#C5A059]">Abhinaya</span>.
 						</p>
-						<p class="text-[10px] font-light tracking-[0.3em] text-gray-400 uppercase">
-							M.Sc. Molecular Biology
+
+						<p>
+							Convergence: We believe that <span class="text-white italic">Rhythm (Thallam)</span>,
+							<span class="text-white italic">Melody (Music)</span>, and
+							<span class="text-white italic">Expression (Bhava)</span> are inseparable.
 						</p>
 					</div>
 				</div>
+			</div>
+		</div>
+	</section>
 
-				<div class="pl-6">
-					<p class="font-serif text-sm leading-relaxed text-gray-500 italic">
-						"Tradition is the foundation. <br /> Innovation is the New Order."
-					</p>
-				</div>
-			</aside>
-
-			<main class="space-y-16">
-				<div class="max-w-2xl space-y-8">
-					<p class="text-lg leading-relaxed font-light text-gray-300">
-						As the Artistic Director at <span class="font-bold text-white">Bala Natya Manjari</span>
-						(the institution of my Guru,
-						<span class="text-yellow-500/80">Prof. Smt. Sikkil Vasanthakumari</span>), I bring 40
-						years of immersion in Bharatanatyam and 20 years of mentoring to this new chapter at
-						<span class="border-b border-yellow-500/30">Anvaya Collectives</span>.
-					</p>
-					<p class="text-lg leading-relaxed font-light text-gray-300">
-						I am inviting performers and budding teachers to explore a unique approach to dance—one
-						that bridges the precision of solo mastery with the grand vision of group choreography.
-					</p>
-				</div>
-
-				<div class="grid gap-6 sm:grid-cols-2">
-					{#each [{ title: 'The Solo Command', desc: 'Refining Abhinaya and Angashuddha for a powerful solo presence.' }, { title: 'Dramas & Themes', desc: 'Crafting narratives from ancient Ithihasas to contemporary themes.' }, { title: 'Visual Geometry', desc: 'Understanding space and formations in group choreography.' }, { title: 'Laya & Shastra', desc: 'Deepening the rhythmic logic and theoretical foundations of Natya.' }] as card}
-						<div
-							class="border border-white/5 bg-white/[0.02] p-8 transition-colors hover:border-yellow-500/30"
-						>
-							<h4 class="mb-4 text-[10px] font-bold tracking-widest text-yellow-500 uppercase">
-								{card.title}
-							</h4>
-							<p class="text-sm leading-relaxed font-light text-gray-400">{card.desc}</p>
-						</div>
-					{/each}
-				</div>
-			</main>
+	<section class="border-t border-white/5 bg-white/[0.01] py-20">
+		<div class="mx-auto max-w-4xl px-8 text-center">
+			<h3 class="mb-6 text-[10px] font-bold tracking-[0.5em] text-[#C5A059] uppercase">
+				Our Mission
+			</h3>
+			<p class="font-serif text-2xl leading-relaxed text-white italic md:text-3xl">
+				"To serve as a living medium for storytelling and heritage, bridging the gap between
+				technical precision and raw, authentic emotion."
+			</p>
+			<div class="mt-10 flex flex-col items-center gap-4">
+				<p class="text-[11px] font-bold tracking-widest text-gray-500 uppercase">
+					Alamelu Sethuraman • Artistic Director
+				</p>
+				<a
+					href="/vision"
+					class="group flex items-center gap-3 text-[10px] font-black tracking-[0.3em] text-[#C5A059] uppercase"
+				>
+					Read Artistic Profile
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-4 w-4 transition-transform group-hover:translate-x-2"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M17 8l4 4m0 0l-4 4m4-4H3"
+						/></svg
+					>
+				</a>
+			</div>
 		</div>
 	</section>
 </div>

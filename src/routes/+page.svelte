@@ -15,9 +15,9 @@
 
 	<div class="z-20 w-full text-center md:w-2/3 md:pl-12 md:text-left">
 		<h1
-			class="mb-4 text-5xl leading-none font-black tracking-tighter text-yellow-500 uppercase md:text-8xl"
+			class="mb-4 text-5xl leading-none font-black tracking-tighter text-yellow-600 uppercase md:text-8xl"
 		>
-			ANVAYA <br /> COLLECTIVE
+			ANVAYA <br /> COLLECTIVES
 		</h1>
 
 		<div class="mb-10 text-[10px] font-light tracking-[0.2em] text-gray-300 uppercase md:text-sm">

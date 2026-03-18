@@ -3,6 +3,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	return {
-		stats: locals.stats
+		stats: locals.stats,
+		formSubmitted: locals.formSubmitted // Add this line
 	};
 };
