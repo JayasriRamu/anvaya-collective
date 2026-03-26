@@ -1,10 +1,37 @@
 <script lang="ts">
-	let { data } = $props();
-	let totalInquiries = $derived(data.inquiries.length);
+	import { createAuthClient } from 'better-auth/svelte';
+	const authClient = createAuthClient();
 
-	// State for the modal
+	async function handleSignOut() {
+		await authClient.signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					window.location.href = '/admin/login';
+				}
+			}
+		});
+	}
+	// NEW: Function to clear all cookies
+	function clearAllCookies() {
+		const cookies = document.cookie.split(';');
+
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i];
+			const eqPos = cookie.indexOf('=');
+			const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+			// Clear the cookie by setting expiry to the past
+			document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+		}
+
+		// Reload the page - this will force a logout because the session cookie is gone
+		window.location.href = '/admin/login';
+	}
+	let { data } = $props();
+	let inquiries = $derived(data?.inquiries ?? []);
+	let totalInquiries = $derived(inquiries.length);
+
 	let showModal = $state(false);
-	let itemToDelete = $state(null);
+	let itemToDelete = $state<any>(null);
 
 	function openModal(item: any) {
 		itemToDelete = item;
@@ -12,25 +39,53 @@
 	}
 </script>
 
-<div class="min-h-screen bg-[#121212] p-8 text-white">
-	{#if showModal}
-		<div class="pointer-events-none fixed inset-0 z-[200] flex items-center justify-center">
-			<div
-				class="pointer-events-auto w-full max-w-sm rounded-lg border border-white/10 bg-[#1a1a1a] p-8 text-center shadow-2xl"
+<div class="min-h-screen bg-[#070707] text-white selection:bg-[#C5A059] selection:text-black">
+	<header
+		class="sticky top-0 z-[100] flex items-center justify-between border-b border-white/10 bg-[#0a0a0a] px-8 py-3"
+	>
+		<div class="flex items-center gap-4">
+			<img
+				src="/images/logo.png"
+				alt="Anvaya"
+				class="h-8 w-auto object-contain brightness-200 grayscale invert"
+			/>
+			<div class="h-4 w-[1px] bg-white/20"></div>
+			<h1 class="font-serif text-sm tracking-[0.2em] text-[#C5A059] uppercase italic">
+				Admin Panel
+			</h1>
+		</div>
+
+		<div class="flex items-center gap-6">
+			<a
+				href="/"
+				class="text-[9px] font-bold tracking-[0.2em] text-white/60 uppercase hover:text-[#C5A059]"
+				>View Site</a
 			>
-				<h3 class="font-serif text-xl text-yellow-500 uppercase">Confirm Deletion</h3>
-				<p class="mt-4 text-xs text-gray-400">
-					Are you sure? This inquiry from {itemToDelete?.name} will be permanently removed.
-				</p>
+			<button
+				onclick={handleSignOut}
+				class="rounded-sm border border-[#ff3e3e] bg-[#ff3e3e]/10 px-5 py-1.5 text-[10px] font-black tracking-[0.1em] text-[#ff3e3e] uppercase transition-all hover:bg-[#ff3e3e] hover:text-white"
+			>
+				Sign Out
+			</button>
+		</div>
+	</header>
+
+	{#if showModal}
+		<div
+			class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+		>
+			<div class="w-full max-w-xs border border-white/10 bg-[#111] p-8 text-center shadow-2xl">
+				<h3 class="font-serif text-lg tracking-widest text-[#C5A059] uppercase">Delete Inquiry?</h3>
+				<p class="mt-2 text-[10px] font-bold text-white uppercase">{itemToDelete?.name}</p>
 				<div class="mt-8 flex gap-3">
 					<button
-						class="flex-1 rounded bg-white/10 py-2 text-xs font-bold text-white uppercase hover:bg-white/20"
+						class="flex-1 border border-white/20 py-2 text-[10px] font-bold text-white uppercase hover:bg-white/10"
 						onclick={() => (showModal = false)}>Cancel</button
 					>
 					<form method="POST" action="?/deleteInquiry" class="flex-1">
 						<input type="hidden" name="id" value={itemToDelete?.id} />
 						<button
-							class="w-full rounded bg-red-600 py-2 text-xs font-bold text-white uppercase hover:bg-red-700"
+							class="w-full bg-[#ff3e3e] py-2 text-[10px] font-bold text-white uppercase hover:bg-[#d63030]"
 							>Delete</button
 						>
 					</form>
@@ -39,63 +94,111 @@
 		</div>
 	{/if}
 
-	<div class="mx-auto max-w-7xl">
-		<header class="mb-12 flex items-end justify-between border-b border-white/10 pb-6">
+	<div class="mx-auto max-w-7xl px-8 py-10">
+		<div class="mb-10 flex items-end justify-between border-b border-white/10 pb-8">
 			<div>
-				<h1 class="font-serif text-3xl tracking-widest text-yellow-500 uppercase">
-					Inquiry Manager
-				</h1>
-				<p class="mt-2 text-[10px] tracking-[0.3em] text-gray-500 uppercase">
-					Total Leads: <span class="font-bold text-white">{totalInquiries}</span>
+				<p class="text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">
+					Inquiry Volume
 				</p>
+				<h2 class="text-6xl font-light tracking-tighter text-white">
+					{totalInquiries}
+					<span class="ml-2 text-xs font-bold tracking-[0.3em] text-white/30 uppercase"
+						>Total Leads</span
+					>
+				</h2>
 			</div>
-			<a href="/" class="text-[10px] tracking-widest text-gray-500 uppercase hover:text-white"
-				>← Back to Site</a
-			>
-		</header>
+			<div class="flex gap-4">
+				<button
+					onclick={clearAllCookies}
+					class="border border-white/10 bg-white/5 px-6 py-2 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase transition-all hover:border-red-400/30 hover:text-red-400"
+					title="This will log you out and reset visitor stats"
+				>
+					Clear All Cookies
+				</button>
+				<button
+					class="border border-white/20 bg-white/5 px-6 py-2 text-[10px] font-bold tracking-[0.2em] text-white uppercase transition-all hover:bg-white hover:text-black"
+				>
+					Refresh Data
+				</button>
+			</div>
+		</div>
 
-		<div class="overflow-x-auto rounded-sm border border-white/5 bg-[#1a1a1a]">
+		<div class="overflow-hidden border border-white/10 bg-[#0d0d0d]">
 			<table class="w-full text-left">
 				<thead
-					class="bg-[#252525] text-[10px] font-bold tracking-[0.2em] text-yellow-500 uppercase"
+					class="bg-white/[0.05] text-[10px] font-black tracking-[0.2em] text-[#C5A059] uppercase"
 				>
 					<tr>
-						<th class="p-5">Date</th>
-						<th class="p-5">Name</th>
-						<th class="p-5">WhatsApp</th>
-						<th class="p-5">Age</th>
-						<th class="p-5">Focus Area</th>
-						<th class="p-5">Message</th>
-						<th class="p-5 text-right">Actions</th>
+						<th class="px-6 py-5">Date Received</th>
+						<th class="px-6 py-5">Client Name</th>
+						<th class="px-6 py-5">Interest & Age</th>
+						<th class="px-6 py-5">Message</th>
+						<th class="px-8 py-5 text-right">Action</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-white/5">
-					{#each data.inquiries as item}
-						<tr class="transition-colors hover:bg-white/5">
-							<td class="p-5 text-sm text-gray-500"
-								>{new Date(item.createdAt).toLocaleDateString()}</td
-							>
-							<td class="p-5 font-bold">{item.name}</td>
-							<td class="p-5 text-xs">
-								<a
-									href="https://wa.me/91{item.email}"
-									target="_blank"
-									class="text-green-500 transition-all hover:text-green-400 hover:underline"
-								>
-									+91 {item.email}
-								</a>
+				<tbody class="divide-y divide-white/10">
+					{#each inquiries as item}
+						<tr class="group transition-colors hover:bg-white/[0.02]">
+							<td class="px-6 py-8">
+								<span class="text-[12px] font-bold tracking-wider text-white">
+									{item.createdAt
+										? new Date(item.createdAt).toLocaleDateString('en-IN', {
+												day: '2-digit',
+												month: 'short',
+												year: 'numeric'
+											})
+										: '—'}
+								</span>
 							</td>
-							<td class="p-5 text-xs">{item.ageGroup || '—'}</td>
-							<td class="p-5 text-xs text-yellow-400 uppercase">{item.interest}</td>
-							<td class="max-w-xs truncate p-5 text-xs text-gray-400" title={item.message}
-								>{item.message || '—'}</td
-							>
-							<td class="p-5 text-right">
+
+							<td class="px-6 py-8">
+								<div
+									class="text-base font-bold text-white transition-colors group-hover:text-[#C5A059]"
+								>
+									{item.name ?? 'Guest'}
+								</div>
+								{#if item.email}
+									<a
+										href="https://wa.me/91{item.email}"
+										target="_blank"
+										class="mt-1 inline-flex items-center gap-2 text-[11px] font-bold text-green-400 hover:text-green-300"
+									>
+										<span
+											class="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"
+										></span>
+										+91 {item.email}
+									</a>
+								{/if}
+							</td>
+
+							<td class="px-6 py-8">
+								<div
+									class="inline-block border border-[#C5A059]/40 bg-[#C5A059]/10 px-3 py-1 text-[10px] font-black tracking-widest text-[#C5A059] uppercase"
+								>
+									{item.interest ?? 'General'}
+								</div>
+								<div
+									class="mt-2 text-[11px] font-black tracking-widest text-[#C5A059] uppercase italic opacity-90"
+								>
+									Age: {item.ageGroup ?? '—'}
+								</div>
+							</td>
+
+							<td class="max-w-xs px-6 py-8 leading-relaxed">
+								<p
+									class="text-[12px] text-white/70 italic transition-colors group-hover:text-white"
+								>
+									"{item.message ?? 'No details'}"
+								</p>
+							</td>
+
+							<td class="px-8 py-8 text-right">
 								<button
 									onclick={() => openModal(item)}
-									class="text-[10px] font-bold tracking-widest text-red-500/50 uppercase transition-colors hover:text-red-500"
-									>Delete</button
+									class="rounded-sm border border-[#ff3e3e] bg-transparent px-4 py-1.5 text-[10px] font-black tracking-widest text-[#ff3e3e] uppercase transition-all hover:bg-[#ff3e3e] hover:text-white"
 								>
+									Remove
+								</button>
 							</td>
 						</tr>
 					{/each}
@@ -104,3 +207,9 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	:global(.font-serif) {
+		font-family: 'Cinzel', serif;
+	}
+</style>
