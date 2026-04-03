@@ -5,7 +5,14 @@ export const inquiries = sqliteTable('inquiries', {
 	name: text('name').notNull(),
 	email: text('email').notNull(), // This is the field mapping to your mobile number
 	ageGroup: text('age_group'),
-	interest: text('interest').notNull(),
+
+	// NEW: To track if they are in India or Overseas
+	location: text('location').$default(() => 'India'),
+
+	// NEW: To track Ph.D. Research Consent
+	consent: integer('consent', { mode: 'boolean' }).$default(() => false),
+
+	interest: text('interest'), // Made nullable for safer form submissions
 	message: text('message'),
 	status: text('status').$default(() => 'New'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
@@ -33,6 +40,7 @@ export const session = sqliteTable('session', {
 		.notNull()
 		.references(() => user.id)
 });
+
 export const account = sqliteTable('account', {
 	id: text('id').primaryKey(),
 	accountId: text('account_id').notNull(),

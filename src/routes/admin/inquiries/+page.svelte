@@ -1,6 +1,16 @@
 <script lang="ts">
 	import { createAuthClient } from 'better-auth/svelte';
+	import { invalidateAll } from '$app/navigation'; // For the Refresh button
+
 	const authClient = createAuthClient();
+
+	// Props and State
+	let { data } = $props();
+	let inquiries = $derived(data?.inquiries ?? []);
+	let totalInquiries = $derived(inquiries.length);
+
+	let showModal = $state(false);
+	let itemToDelete = $state<any>(null);
 
 	async function handleSignOut() {
 		await authClient.signOut({
@@ -11,37 +21,45 @@
 			}
 		});
 	}
-	// NEW: Function to clear all cookies
+
 	function clearAllCookies() {
 		const cookies = document.cookie.split(';');
-
 		for (let i = 0; i < cookies.length; i++) {
 			const cookie = cookies[i];
 			const eqPos = cookie.indexOf('=');
-			const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-			// Clear the cookie by setting expiry to the past
-			document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+			const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+			// Attempt to clear from multiple common path levels
+			document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;`;
+			document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/admin;`;
 		}
-
-		// Reload the page - this will force a logout because the session cookie is gone
 		window.location.href = '/admin/login';
 	}
-	let { data } = $props();
-	let inquiries = $derived(data?.inquiries ?? []);
-	let totalInquiries = $derived(inquiries.length);
-
-	let showModal = $state(false);
-	let itemToDelete = $state<any>(null);
 
 	function openModal(item: any) {
 		itemToDelete = item;
 		showModal = true;
 	}
+
+	function refreshData() {
+		invalidateAll();
+	}
+
+	// Helper for date formatting
+	function formatDate(dateStr: string) {
+		if (!dateStr) return '—';
+		return new Date(dateStr).toLocaleDateString('en-IN', {
+			day: '2-digit',
+			month: 'short',
+			year: 'numeric'
+		});
+	}
 </script>
 
-<div class="min-h-screen bg-[#070707] text-white selection:bg-[#C5A059] selection:text-black">
+<div
+	class="min-h-screen bg-[#070707] font-sans text-white selection:bg-[#C5A059] selection:text-black"
+>
 	<header
-		class="sticky top-0 z-[100] flex items-center justify-between border-b border-white/10 bg-[#0a0a0a] px-8 py-3"
+		class="sticky top-0 z-[100] flex items-center justify-between border-b border-white/10 bg-[#0a0a0a]/80 px-8 py-3 backdrop-blur-md"
 	>
 		<div class="flex items-center gap-4">
 			<img
@@ -80,21 +98,29 @@
 				<div class="mt-8 flex gap-3">
 					<button
 						class="flex-1 border border-white/20 py-2 text-[10px] font-bold text-white uppercase hover:bg-white/10"
-						onclick={() => (showModal = false)}>Cancel</button
+						onclick={() => (showModal = false)}
 					>
-					<form method="POST" action="?/deleteInquiry" class="flex-1">
+						Cancel
+					</button>
+					<form
+						method="POST"
+						action="?/deleteInquiry"
+						class="flex-1"
+						onsubmit={() => (showModal = false)}
+					>
 						<input type="hidden" name="id" value={itemToDelete?.id} />
 						<button
 							class="w-full bg-[#ff3e3e] py-2 text-[10px] font-bold text-white uppercase hover:bg-[#d63030]"
-							>Delete</button
 						>
+							Delete
+						</button>
 					</form>
 				</div>
 			</div>
 		</div>
 	{/if}
 
-	<div class="mx-auto max-w-7xl px-8 py-10">
+	<main class="mx-auto max-w-7xl px-8 py-10">
 		<div class="mb-10 flex items-end justify-between border-b border-white/10 pb-8">
 			<div>
 				<p class="text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">
@@ -111,11 +137,12 @@
 				<button
 					onclick={clearAllCookies}
 					class="border border-white/10 bg-white/5 px-6 py-2 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase transition-all hover:border-red-400/30 hover:text-red-400"
-					title="This will log you out and reset visitor stats"
+					title="Full reset"
 				>
-					Clear All Cookies
+					Clear Cookies
 				</button>
 				<button
+					onclick={refreshData}
 					class="border border-white/20 bg-white/5 px-6 py-2 text-[10px] font-bold tracking-[0.2em] text-white uppercase transition-all hover:bg-white hover:text-black"
 				>
 					Refresh Data
@@ -123,7 +150,7 @@
 			</div>
 		</div>
 
-		<div class="overflow-hidden border border-white/10 bg-[#0d0d0d]">
+		<div class="overflow-x-auto border border-white/10 bg-[#0d0d0d]">
 			<table class="w-full text-left">
 				<thead
 					class="bg-white/[0.05] text-[10px] font-black tracking-[0.2em] text-[#C5A059] uppercase"
@@ -137,20 +164,13 @@
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-white/10">
-					{#each inquiries as item}
+					{#each inquiries as item (item.id)}
 						<tr class="group transition-colors hover:bg-white/[0.02]">
 							<td class="px-6 py-8">
 								<span class="text-[12px] font-bold tracking-wider text-white">
-									{item.createdAt
-										? new Date(item.createdAt).toLocaleDateString('en-IN', {
-												day: '2-digit',
-												month: 'short',
-												year: 'numeric'
-											})
-										: '—'}
+									{formatDate(item.createdAt)}
 								</span>
 							</td>
-
 							<td class="px-6 py-8">
 								<div
 									class="text-base font-bold text-white transition-colors group-hover:text-[#C5A059]"
@@ -159,18 +179,16 @@
 								</div>
 								{#if item.email}
 									<a
-										href="https://wa.me/91{item.email}"
-										target="_blank"
+										href="tel:{item.email}"
 										class="mt-1 inline-flex items-center gap-2 text-[11px] font-bold text-green-400 hover:text-green-300"
 									>
 										<span
 											class="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"
 										></span>
-										+91 {item.email}
+										{item.email}
 									</a>
 								{/if}
 							</td>
-
 							<td class="px-6 py-8">
 								<div
 									class="inline-block border border-[#C5A059]/40 bg-[#C5A059]/10 px-3 py-1 text-[10px] font-black tracking-widest text-[#C5A059] uppercase"
@@ -183,7 +201,6 @@
 									Age: {item.ageGroup ?? '—'}
 								</div>
 							</td>
-
 							<td class="max-w-xs px-6 py-8 leading-relaxed">
 								<p
 									class="text-[12px] text-white/70 italic transition-colors group-hover:text-white"
@@ -191,7 +208,6 @@
 									"{item.message ?? 'No details'}"
 								</p>
 							</td>
-
 							<td class="px-8 py-8 text-right">
 								<button
 									onclick={() => openModal(item)}
@@ -201,11 +217,20 @@
 								</button>
 							</td>
 						</tr>
+					{:else}
+						<tr>
+							<td
+								colspan="5"
+								class="py-20 text-center text-[10px] font-bold tracking-[0.3em] text-white/20 uppercase"
+							>
+								No inquiries found
+							</td>
+						</tr>
 					{/each}
 				</tbody>
 			</table>
 		</div>
-	</div>
+	</main>
 </div>
 
 <style>

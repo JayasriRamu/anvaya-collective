@@ -22,10 +22,10 @@
 	});
 </script>
 
-<div class="relative flex min-h-screen flex-col overflow-x-hidden bg-[#121212] text-white">
+<div class="relative flex min-h-screen flex-col overflow-x-hidden bg-[#070707] text-white">
 	{#if !isAdminPage}
 		<nav
-			class="fixed top-0 z-[100] flex w-full items-center justify-between border-b border-white/5 bg-[#121212]/90 px-4 py-5 backdrop-blur-md md:px-16 md:py-10"
+			class="fixed top-0 z-[100] flex w-full items-center justify-between border-b border-white/5 bg-[#070707]/90 px-8 py-6 backdrop-blur-md md:px-20 md:py-8"
 		>
 			<a href="/" class="group flex items-center gap-3">
 				<img src="/images/logo.png" alt="Logo" class="h-8 w-auto object-contain md:h-14" />
@@ -142,7 +142,7 @@
 			<div class="grid grid-cols-1 items-center gap-8 md:grid-cols-3">
 				<div class="hidden md:block"></div>
 
-				<div class="flex items-center justify-center gap-6">
+				<div class="flex flex-wrap items-center justify-center gap-6">
 					<a
 						href="https://www.youtube.com/@anvaya.tattvum"
 						target="_blank"
@@ -194,6 +194,19 @@
 							/>
 						</svg>
 					</a>
+
+					<a
+						href="https://linkedin.com/company/anvayacollectives"
+						target="_blank"
+						class="text-gray-400 transition-colors hover:text-[#C5A059]"
+						aria-label="LinkedIn"
+					>
+						<svg class="h-5 w-5 fill-current" viewBox="0 0 24 24">
+							<path
+								d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-1.337-.025-3.062-1.865-3.062-1.867 0-2.153 1.459-2.153 2.966v5.7h-3v-11h2.88v1.503h.04c.401-.759 1.381-1.554 2.83-1.554 3.03 0 3.59 1.994 3.59 4.585v6.466z"
+							/>
+						</svg>
+					</a>
 				</div>
 
 				<div
@@ -205,6 +218,12 @@
 					<a href="tel:+918073536708" class="transition-all hover:text-[#C5A059]">+91 80735 36708</a
 					>
 				</div>
+			</div>
+
+			<div class="mt-20 pb-12 text-center">
+				<p class="font-serif text-[10px] tracking-[0.3em] text-white/50 uppercase">
+					Copyright &copy; {new Date().getFullYear()} Tattvum Automations Pvt Ltd All Rights Reserved
+				</p>
 			</div>
 		</footer>
 	{/if}

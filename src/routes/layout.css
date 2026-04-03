@@ -1,14 +1,43 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
 
-/* Force links to respect Tailwind utility classes by removing plugin defaults */
-/*nav a {
-	font-weight: inherit !important;
-	text-decoration: none !important;
-}*/
+@theme {
+	--font-serif: 'Cinzel', serif;
+	--font-sans: 'Inter', sans-serif;
+}
 
-/* Ensure the hover state is visually distinct by overriding default browser link behavior */
-/*nav a:hover {
-	color: white !important;
-}*/
+/* Base Styles */
+body {
+	background-color: #070707;
+	color: white;
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Force Elegance on Serif elements */
+.font-serif {
+	font-family: var(--font-serif) !important;
+	font-weight: 400; /* Increased weight slightly for better visibility */
+	letter-spacing: 0.05em;
+	text-rendering: optimizeLegibility;
+}
+
+/* Global Link Transitions */
+a {
+	transition: all 0.3s ease-in-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: #070707;
+}
+::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: rgba(197, 160, 89, 0.5); /* Matches your gold #C5A059 */
+}
