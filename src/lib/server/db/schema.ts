@@ -3,7 +3,7 @@ import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 export const inquiries = sqliteTable('inquiries', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	name: text('name').notNull(),
-	email: text('email').notNull(), // This is the field mapping to your mobile number
+	phone: text('phone').notNull(), // RENAMED FROM email TO phone
 	ageGroup: text('age_group'),
 
 	// NEW: To track if they are in India or Overseas

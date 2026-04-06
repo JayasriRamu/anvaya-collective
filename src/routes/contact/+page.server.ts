@@ -12,7 +12,7 @@ export const load = async ({ locals }) => {
 		const userRecord = await db
 			.select()
 			.from(inquiries)
-			.where(eq(inquiries.email, locals.userMobile))
+			.where(eq(inquiries.phone, locals.userMobile))
 			.limit(1);
 
 		return { userInquiry: userRecord[0] || null };
@@ -51,7 +51,7 @@ export const actions = {
 			const existing = await db
 				.select()
 				.from(inquiries)
-				.where(eq(inquiries.email, cleanMobile))
+				.where(eq(inquiries.phone, cleanMobile))
 				.limit(1);
 
 			const payload = {
@@ -64,12 +64,12 @@ export const actions = {
 
 			if (existing.length > 0) {
 				// Update existing record
-				await db.update(inquiries).set(payload).where(eq(inquiries.email, cleanMobile));
+				await db.update(inquiries).set(payload).where(eq(inquiries.phone, cleanMobile));
 			} else {
 				// Insert new record
 				await db.insert(inquiries).values({
 					...payload,
-					email: cleanMobile
+					phone: cleanMobile
 				});
 			}
 
