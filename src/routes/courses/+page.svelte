@@ -13,6 +13,26 @@
 				'Comprehensive exploration of ancient Indian dramatic theory, aesthetics, and performance foundation.'
 		},
 		{
+			title: 'Bio-Somatic Bharatanatyam',
+			description:
+				'A modern scientific approach to classical movement, focusing on body awareness, anatomical alignment, and sustainable dance practice.',
+			isOpen: false,
+			modules: [
+				{
+					title: 'Anatomy of Arimandi',
+					sub: 'Deepening the basic half-sit posture through hip rotation, pelvic stability, and knee alignment.'
+				},
+				{
+					title: 'Breath & Kinetic Flow',
+					sub: 'Synchronizing Prana with adavu execution for fluid, effortless movement.'
+				},
+				{
+					title: 'Somatic Recovery',
+					sub: 'Techniques for injury prevention and longevity in a professional dance career.'
+				}
+			]
+		},
+		{
 			title: 'Choreography & Production',
 			description:
 				'Bridging traditional techniques with contemporary stage composition and lighting aesthetics.',
