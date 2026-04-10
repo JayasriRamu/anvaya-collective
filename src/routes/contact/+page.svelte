@@ -6,21 +6,32 @@
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
+	// Navigation & UI State
+	let currentStep = $state(1);
+	const totalSteps = 5;
 	let isEditing = $state(false);
 	let isSubmitting = $state(false);
-	let selectedLocation = $state('India');
-	let rememberMe = $state(true);
+	let formSubmitted = $state(false);
 	let activeDescription = $state('');
 
-	let localUser = $state<{
-		name: string;
-		phone: string;
-		ageGroup?: string;
-		location?: string;
-		interest?: string;
-	} | null>(null);
+	// Dropdown state
+	let isLocationOpen = $state(false);
 
-	let currentUser = $derived(data?.userInquiry || localUser);
+	// App Logic State
+	let hasExistingProfile = $state(false);
+	let rememberMe = $state(true);
+
+	// Data Source
+	let localUser = $state({
+		name: '',
+		phone: '',
+		location: 'India',
+		ageGroup: '40-50',
+		interest: [] as string[],
+		healthHistory: [] as string[],
+		medications: '',
+		signature: ''
+	});
 
 	const interests = [
 		{ name: '✨ Choreography', desc: 'Creative composition and sequence building.' },
@@ -33,383 +44,498 @@
 		{ name: '➕ Others', desc: 'Other specific interests or requirements.' }
 	];
 
+	const healthOptions = [
+		'Osteoporosis',
+		'Rheumatoid Arthritis',
+		'Knee Replacement',
+		'Hip/Back Surgery',
+		'Ligament Tear',
+		'High Blood Pressure',
+		'Cardiovascular',
+		'Sarcopenia',
+		'Diabetes',
+		'Chronic Pain'
+	];
+
 	const ageGroups = ['5-10', '10-20', '20-30', '40-50', '51-60', '61-70', '71+'];
 
 	onMount(() => {
 		const saved = localStorage.getItem('user_profile_backup');
 		if (saved) {
-			localUser = JSON.parse(saved);
-			if (localUser?.location) selectedLocation = localUser.location;
-			rememberMe = true;
+			try {
+				const parsed = JSON.parse(saved);
+				if (parsed && parsed.name) {
+					localUser = {
+						...localUser,
+						...parsed,
+						interest: Array.isArray(parsed.interest)
+							? parsed.interest
+							: parsed.interest?.split(', ') || [],
+						healthHistory: Array.isArray(parsed.healthHistory)
+							? parsed.healthHistory
+							: parsed.healthHistory?.split(', ') || []
+					};
+					hasExistingProfile = true;
+				}
+			} catch (e) {
+				localStorage.removeItem('user_profile_backup');
+			}
 		}
 	});
 
-	async function handleSubmit(event: SubmitEvent) {
-		event.preventDefault();
-		isSubmitting = true;
-		const formElement = event.currentTarget as HTMLFormElement;
-		const formData = new FormData(formElement);
-		formData.append('rememberMe', rememberMe ? 'on' : 'off');
-
-		const profile = {
-			name: formData.get('name') as string,
-			phone: formData.get('mobile') as string,
-			location: formData.get('location') as string,
-			ageGroup: formData.get('ageGroup') as string,
-			interest: formData.getAll('interest').join(', ')
-		};
-
-		if (rememberMe) {
-			localStorage.setItem('user_profile_backup', JSON.stringify(profile));
-		} else {
-			localStorage.removeItem('user_profile_backup');
-		}
-
-		try {
-			const response = await fetch(formElement.action, {
-				method: 'POST',
-				body: formData
-			});
-			if (response.ok) {
-				if (!rememberMe) {
-					localUser = null;
-				} else {
-					localUser = profile;
-				}
-				await invalidateAll();
-				setTimeout(() => {
-					isSubmitting = false;
-					isEditing = false;
-				}, 500);
-			}
-		} catch (e) {
-			console.error('Submission failed', e);
-			isSubmitting = false;
-		}
+	function goToStep(step: number) {
+		if (step >= 1 && step <= totalSteps) currentStep = step;
 	}
 
 	function validateMobile(event: Event) {
 		const input = event.target as HTMLInputElement;
 		input.value = input.value.replace(/[^\d+]/g, '');
+		localUser.phone = input.value;
 	}
 
-	let showCopyToast = $state(false);
-	function copyToClipboard(text: string) {
-		navigator.clipboard.writeText(text).then(() => {
-			showCopyToast = true;
-			setTimeout(() => {
-				showCopyToast = false;
-			}, 2000);
-		});
+	async function handleSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		isSubmitting = true;
+
+		const submissionData = {
+			...localUser,
+			interest: localUser.interest.join(', '),
+			healthHistory: localUser.healthHistory.join(', ')
+		};
+
+		if (rememberMe) localStorage.setItem('user_profile_backup', JSON.stringify(submissionData));
+		else localStorage.removeItem('user_profile_backup');
+
+		try {
+			const formElement = event.currentTarget as HTMLFormElement;
+			const formData = new FormData(formElement);
+			formData.set('interest', submissionData.interest);
+			formData.set('healthHistory', submissionData.healthHistory);
+			formData.set('location', localUser.location);
+			formData.set('ageGroup', localUser.ageGroup);
+
+			const response = await fetch(formElement.action, { method: 'POST', body: formData });
+			if (response.ok) {
+				await invalidateAll();
+				setTimeout(() => {
+					isSubmitting = false;
+					isEditing = false;
+					formSubmitted = true;
+					hasExistingProfile = true;
+				}, 500);
+			}
+		} catch (e) {
+			isSubmitting = false;
+		}
 	}
 
 	async function handleLogout() {
 		localStorage.removeItem('user_profile_backup');
-		localUser = null;
+		localUser = {
+			name: '',
+			phone: '',
+			location: 'India',
+			ageGroup: '40-50',
+			interest: [],
+			healthHistory: [],
+			medications: '',
+			signature: ''
+		};
+		hasExistingProfile = false;
+		isEditing = false;
+		currentStep = 1;
+	}
+
+	function copyToClipboard(text: string) {
+		navigator.clipboard.writeText(text);
 	}
 </script>
 
 <div
-	class="relative flex min-h-screen w-full flex-col bg-[#070707] font-sans text-white md:flex-row"
+	class="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#070707] font-sans text-white md:flex-row"
 >
-	<div
-		class="relative h-[40vh] w-full shrink-0 overflow-hidden md:sticky md:top-0 md:h-screen md:w-[35%]"
-	>
+	<div class="relative h-[30vh] w-full shrink-0 border-r border-white/5 md:h-screen md:w-[35%]">
 		<img
 			src="/images/background-hero.jpg"
 			alt="Dancer"
-			class="h-full w-full object-cover object-top brightness-90"
+			class="h-full w-full object-cover object-top brightness-75"
 		/>
 		<div
 			class="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent md:bg-gradient-to-r md:from-[#070707]"
 		></div>
 	</div>
 
-	<div class="flex w-full flex-col items-center px-8 py-16 md:w-[65%] md:px-20 md:py-24">
-		<div class="w-full max-w-5xl">
-			<header class="mb-16 md:mb-20">
-				<h1 class="font-serif text-5xl tracking-tight text-[#C5A059] italic md:text-8xl">
-					{currentUser && !isEditing ? 'Your Profile' : 'Anvaya Collectives'}
-				</h1>
-				<p class="mt-4 text-[12px] font-bold tracking-[0.5em] text-white/50 uppercase">
-					Bio-Somatic Workshop Inquiry
-				</p>
-			</header>
-
-			{#if currentUser && !isEditing}
+	<div
+		class="flex h-screen w-full flex-col overflow-y-auto px-8 py-12 md:w-[65%] md:px-20 md:py-16"
+	>
+		<div class="mx-auto w-full max-w-4xl">
+			{#if formSubmitted}
+				<div in:fly={{ y: 30 }} class="space-y-8 py-20 text-center">
+					<div
+						class="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#C5A059] text-4xl shadow-[0_0_20px_rgba(197,160,89,0.2)]"
+					>
+						✨
+					</div>
+					<h2 class="font-serif text-5xl text-[#C5A059] italic">Registered</h2>
+					<button
+						onclick={() => (formSubmitted = false)}
+						class="bg-[#C5A059] px-12 py-5 text-sm font-black text-black uppercase transition-all hover:bg-white"
+						>View Stored Profile</button
+					>
+				</div>
+			{:else if hasExistingProfile && !isEditing}
 				<div
 					in:fade
-					class="mx-auto max-w-lg space-y-12 border border-white/10 bg-white/[0.03] p-10 shadow-xl"
+					class="space-y-10 border border-white/10 bg-white/[0.03] p-12 shadow-2xl backdrop-blur-sm"
 				>
-					<div class="border-b border-white/10 pb-8">
-						<p class="mb-2 text-[11px] font-bold tracking-widest text-[#C5A059] uppercase">
-							Stored Details
+					<div class="border-b border-white/10 pb-8 text-center">
+						<p class="mb-2 text-[11px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">
+							Workshop Profile
 						</p>
-						<h2 class="text-3xl font-light tracking-tight text-white">Stored Information</h2>
+						<h2 class="font-serif text-4xl tracking-tight text-white italic">
+							Namaste, {localUser.name}
+						</h2>
 					</div>
-					<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-						<div class="space-y-1">
-							<p class="text-xs tracking-wider text-white/40 uppercase">Full Name</p>
-							<p class="text-lg text-white">{currentUser.name || 'N/A'}</p>
+					<div class="grid grid-cols-2 gap-10">
+						<div>
+							<p class="mb-1 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+								WhatsApp
+							</p>
+							<p class="text-2xl font-light text-white">
+								+{localUser.location === 'Outside' ? '' : '91 '}{localUser.phone}
+							</p>
 						</div>
-						<div class="space-y-1">
-							<p class="text-xs tracking-wider text-white/40 uppercase">WhatsApp Number</p>
-							<p class="text-lg text-white">+91 {currentUser.phone || 'N/A'}</p>
+						<div>
+							<p class="mb-1 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+								Track
+							</p>
+							<p class="text-xl font-medium text-[#C5A059]">
+								{localUser.interest.join(', ') || 'General'}
+							</p>
 						</div>
 					</div>
 					<div class="flex gap-4 pt-6">
 						<button
 							onclick={() => (isEditing = true)}
-							class="border border-[#C5A059] px-8 py-3 text-xs tracking-widest text-[#C5A059] uppercase transition-all duration-300 hover:bg-[#C5A059] hover:text-black"
+							class="flex-1 bg-[#C5A059] py-5 text-xs font-black text-black uppercase transition-all hover:bg-white"
 							>Edit Details</button
 						>
-						<form method="POST" action="?/logout" onsubmit={handleLogout}>
-							<button
-								type="submit"
-								class="border border-white/10 px-8 py-3 text-xs tracking-widest text-white/40 uppercase transition-all duration-300 hover:bg-white/5"
-								>Forget Me</button
-							>
-						</form>
+						<button
+							onclick={handleLogout}
+							class="border border-white/20 px-10 text-xs font-bold text-white uppercase transition-all hover:bg-white/10"
+							>Forget Me</button
+						>
 					</div>
 				</div>
 			{:else}
-				<form
-					method="POST"
-					action="?/submit"
-					onsubmit={handleSubmit}
-					class="space-y-16 md:space-y-24"
-					in:fade
-				>
-					<div in:fly={{ y: 20, delay: 100 }} class="space-y-8">
-						<div class="flex items-center gap-3">
-							<span class="text-[12px] font-black tracking-[0.3em] text-[#C5A059] uppercase"
-								>01</span
-							>
-							<h3 class="text-[12px] font-bold tracking-[0.3em] text-white/50 uppercase">
-								Identity & Connection
-							</h3>
-							<div class="h-[1px] flex-grow bg-white/10"></div>
-						</div>
-
-						<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-							<div
-								class="group relative border-b border-white/20 pb-2 transition-colors focus-within:border-[#C5A059]"
-							>
-								<label
-									for="name"
-									class="block text-[12px] font-bold tracking-widest text-white/60 uppercase group-focus-within:text-[#C5A059]"
-									>Full Name</label
-								>
-								<input
-									type="text"
-									name="name"
-									id="name"
-									required
-									value={currentUser?.name || ''}
-									class="w-full bg-transparent py-3 text-xl font-light outline-none placeholder:text-white/10"
-									placeholder="Your Name"
-								/>
-							</div>
-							<div
-								class="group relative border-b border-white/20 pb-2 transition-colors focus-within:border-[#C5A059]"
-							>
-								<label
-									for="mobile"
-									class="block text-[12px] font-bold tracking-widest text-white/60 uppercase group-focus-within:text-[#C5A059]"
-									>WhatsApp Number</label
-								>
-								<div class="flex items-center gap-3">
-									<span class="text-2xl font-light text-[#C5A059]">+91</span>
-									<input
-										type="tel"
-										name="mobile"
-										id="mobile"
-										required
-										oninput={validateMobile}
-										value={currentUser?.phone?.replace('+91', '') || ''}
-										class="w-full bg-transparent py-3 text-xl font-light outline-none placeholder:text-white/10"
-										placeholder="98765 43210"
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div class="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-							<div class="space-y-2">
-								<label
-									for="location"
-									class="block text-[12px] font-bold tracking-widest text-white/60 uppercase"
-									>Region of Residence</label
-								>
-								<p class="text-xs tracking-wide text-white/30">
-									Determines applicable fee and scheduling.
-								</p>
-							</div>
-							<select
-								name="location"
-								bind:value={selectedLocation}
-								class="w-full cursor-pointer border border-white/10 bg-white/5 p-4 text-sm outline-none focus:border-[#C5A059]"
-							>
-								<option value="India">🇮🇳 Inside India</option>
-								<option value="Outside">🌍 Outside India</option>
-							</select>
+				<header class="mb-10 border-b border-white/10 pb-8">
+					<div class="mb-6 flex items-center justify-between">
+						<span class="text-[12px] font-black tracking-[0.4em] text-[#C5A059] uppercase"
+							>Step {currentStep} / {totalSteps}</span
+						>
+						<div class="flex gap-3">
+							{#each Array(totalSteps) as _, i}
+								<button
+									onclick={() => goToStep(i + 1)}
+									class="h-1.5 rounded-full transition-all {currentStep === i + 1
+										? 'w-12 bg-[#C5A059]'
+										: 'w-8 bg-white/10'}"
+								></button>
+							{/each}
 						</div>
 					</div>
+					<h1 class="font-serif text-6xl tracking-tight text-[#C5A059] italic">Anvaya Inquiry</h1>
+				</header>
 
-					<div in:fly={{ y: 20, delay: 200 }} class="space-y-8">
-						<div class="flex items-center gap-3">
-							<span class="text-[12px] font-black tracking-[0.3em] text-[#C5A059] uppercase"
-								>02</span
-							>
-							<h3 class="text-[12px] font-bold tracking-[0.3em] text-white/50 uppercase">
-								Biography & Alignment
-							</h3>
-							<div class="h-[1px] flex-grow bg-white/10"></div>
-						</div>
-
-						<div class="space-y-4">
-							<label class="block text-[12px] font-bold tracking-widest text-white/60 uppercase"
-								>Age Group</label
-							>
-							<div class="grid grid-cols-4 gap-2 md:grid-cols-7">
-								{#each ageGroups as age}
-									<label class="cursor-pointer">
+				<form method="POST" action="?/submit" onsubmit={handleSubmit} class="space-y-14">
+					{#if currentStep === 1}
+						<div in:fade class="space-y-12">
+							<div class="grid grid-cols-1 gap-12 md:grid-cols-2">
+								<div
+									class="border-b border-white/30 pb-3 transition-colors focus-within:border-[#C5A059]"
+								>
+									<label
+										class="mb-1 block text-[12px] font-black tracking-widest text-white/50 uppercase"
+										>Full Name</label
+									>
+									<input
+										type="text"
+										bind:value={localUser.name}
+										required
+										class="w-full bg-transparent py-2 text-2xl font-light text-white outline-none"
+									/>
+								</div>
+								<div
+									class="border-b border-white/30 pb-3 transition-colors focus-within:border-[#C5A059]"
+								>
+									<label
+										class="mb-1 block text-[12px] font-black tracking-widest text-white/50 uppercase"
+										>WhatsApp</label
+									>
+									<div class="flex items-center gap-3">
+										<span class="text-2xl font-light text-[#C5A059]"
+											>{localUser.location === 'Outside' ? '+' : '+91'}</span
+										>
 										<input
-											type="radio"
-											name="ageGroup"
-											value={age}
-											class="peer hidden"
-											checked={currentUser?.ageGroup === age}
+											type="tel"
+											bind:value={localUser.phone}
+											required
+											oninput={validateMobile}
+											class="w-full bg-transparent py-2 text-2xl font-light text-white outline-none"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div class="max-w-sm space-y-4">
+								<label class="text-[12px] font-black tracking-widest text-white/50 uppercase"
+									>Region of Residence</label
+								>
+								<div class="relative">
+									<button
+										type="button"
+										onclick={() => (isLocationOpen = !isLocationOpen)}
+										class="flex w-full items-center justify-between border border-white/20 bg-[#151515] p-5 text-base font-bold text-white shadow-xl"
+									>
+										<span
+											>{localUser.location === 'Outside'
+												? '🌍 Outside India'
+												: '🇮🇳 Inside India'}</span
+										>
+										<span class="text-[#C5A059]">{isLocationOpen ? '▲' : '▼'}</span>
+									</button>
+									{#if isLocationOpen}
+										<div
+											class="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden border border-white/20 bg-[#1a1a1a] shadow-2xl"
+										>
+											<button
+												type="button"
+												onclick={() => {
+													localUser.location = 'India';
+													isLocationOpen = false;
+												}}
+												class="w-full p-5 text-left text-base font-bold text-white transition-colors hover:bg-[#C5A059] hover:text-black"
+												>🇮🇳 Inside India</button
+											>
+											<button
+												type="button"
+												onclick={() => {
+													localUser.location = 'Outside';
+													isLocationOpen = false;
+												}}
+												class="w-full p-5 text-left text-base font-bold text-white transition-colors hover:bg-[#C5A059] hover:text-black"
+												>🌍 Outside India</button
+											>
+										</div>
+									{/if}
+								</div>
+							</div>
+
+							<div class="space-y-6">
+								<label class="text-[12px] font-black tracking-widest text-white/50 uppercase"
+									>Select Age Group</label
+								>
+								<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
+									{#each ageGroups as age}
+										<button
+											type="button"
+											onclick={() => (localUser.ageGroup = age)}
+											class="h-14 border text-sm font-black uppercase transition-all {localUser.ageGroup ===
+											age
+												? 'border-[#C5A059] bg-[#C5A059] text-black shadow-[0_0_15px_rgba(197,160,89,0.3)]'
+												: 'border-white/10 bg-white/5 text-white hover:border-white/40'}"
+											>{age}</button
+										>
+									{/each}
+								</div>
+							</div>
+
+							<div class="border-t border-white/10 pt-8">
+								<label class="group flex cursor-pointer items-center gap-5">
+									<div class="relative">
+										<input type="checkbox" bind:checked={rememberMe} class="peer hidden" />
+										<div
+											class="h-6 w-12 rounded-full border border-white/5 bg-white/10 peer-checked:bg-[#C5A059]/40"
+										></div>
+										<div
+											class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white/60 transition-all peer-checked:translate-x-6 peer-checked:bg-[#C5A059]"
+										></div>
+									</div>
+									<div class="flex flex-col">
+										<span
+											class="text-[12px] font-black tracking-widest text-white/70 uppercase transition-colors group-hover:text-white"
+											>Remember Me</span
+										>
+										<span class="text-[10px] font-bold tracking-tighter text-[#C5A059] uppercase"
+											>Save details locally</span
+										>
+									</div>
+								</label>
+							</div>
+						</div>
+					{:else if currentStep === 2}
+						<div in:fade class="space-y-12">
+							<h3 class="text-[13px] font-black tracking-[0.3em] text-white/60 uppercase">
+								02. Body Intelligence
+							</h3>
+							<div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+								{#each healthOptions as option}
+									<label
+										class="group flex cursor-pointer items-center gap-4 border border-white/10 bg-white/[0.03] p-5 transition-all hover:border-[#C5A059]"
+									>
+										<input
+											type="checkbox"
+											bind:group={localUser.healthHistory}
+											value={option}
+											class="h-5 w-5 accent-[#C5A059]"
 										/>
 										<span
-											class="flex h-10 items-center justify-center border border-white/10 bg-white/[0.02] text-[10px] font-bold tracking-widest text-white/40 transition-all duration-300 peer-checked:border-[#C5A059] peer-checked:bg-[#C5A059]/10 peer-checked:text-[#C5A059] hover:border-white/20"
-											>{age}</span
+											class="text-[11px] font-black tracking-tight text-white/70 uppercase group-hover:text-white"
+											>{option}</span
 										>
 									</label>
 								{/each}
 							</div>
-						</div>
-
-						<div class="space-y-6">
-							<label class="block text-[12px] font-bold tracking-widest text-white/60 uppercase"
-								>Bio-Somatic Track & Mode</label
-							>
-							<div
-								class="flex min-h-[50px] items-center justify-center border border-[#C5A059]/10 bg-[#C5A059]/5 px-6 py-3 text-center transition-all duration-300"
-							>
-								{#if activeDescription}
-									<p
-										in:fade={{ duration: 150 }}
-										class="text-[12px] font-bold tracking-wide text-[#C5A059] italic"
-									>
-										{activeDescription}
-									</p>
-								{:else}
-									<p in:fade class="text-[9px] tracking-[0.3em] text-white/20 uppercase">
-										Hover over a track for curriculum details
-									</p>
-								{/if}
+							<div class="space-y-4">
+								<label class="text-[12px] font-black tracking-widest text-white/50 uppercase"
+									>Medical Notes</label
+								>
+								<textarea
+									bind:value={localUser.medications}
+									rows="5"
+									class="w-full border border-white/20 bg-white/5 p-5 text-xl font-light text-white transition-colors outline-none focus:border-[#C5A059]"
+									placeholder="List medications or restrictions..."
+								></textarea>
 							</div>
-							<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+						</div>
+					{:else if currentStep === 3}
+						<div in:fade class="space-y-10">
+							<h3 class="text-[13px] font-black tracking-[0.3em] text-white/60 uppercase">
+								03. Track Preference
+							</h3>
+							<div
+								class="border border-[#C5A059]/40 bg-black p-6 text-center shadow-[inset_0_0_20px_rgba(197,160,89,0.1)]"
+							>
+								<p class="text-base font-black tracking-widest text-[#C5A059] uppercase italic">
+									{activeDescription || 'Curriculum details will appear here'}
+								</p>
+							</div>
+							<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 								{#each interests as item}
 									<label
 										onmouseenter={() => (activeDescription = item.desc)}
 										onmouseleave={() => (activeDescription = '')}
-										class="group flex h-[64px] cursor-pointer items-center justify-between border border-white/10 bg-white/5 px-4 transition-all hover:border-[#C5A059]/40 hover:bg-[#C5A059]/10"
+										class="group flex cursor-pointer items-center justify-between border border-white/10 bg-white/5 px-8 py-6 transition-all hover:border-[#C5A059]"
 									>
-										<span
-											class="text-[13px] font-medium text-white/70 transition-colors group-hover:text-white"
+										<span class="text-lg font-medium text-white group-hover:text-[#C5A059]"
 											>{item.name}</span
 										>
 										<input
 											type="checkbox"
-											name="interest"
+											bind:group={localUser.interest}
 											value={item.name}
-											class="h-4 w-4 cursor-pointer accent-[#C5A059]"
-											checked={currentUser?.interest?.includes(item.name)}
+											class="h-6 w-6 accent-[#C5A059]"
 										/>
 									</label>
 								{/each}
 							</div>
 						</div>
-					</div>
-
-					<div in:fly={{ y: 20, delay: 300 }} class="space-y-8">
-						<div class="flex items-center gap-3">
-							<span class="text-[12px] font-black tracking-[0.3em] text-[#C5A059] uppercase"
-								>03</span
-							>
-							<h3 class="text-[12px] font-bold tracking-[0.3em] text-white/50 uppercase">
-								Registration & Confirmation
-							</h3>
-							<div class="h-[1px] flex-grow bg-white/10"></div>
-						</div>
-
-						<div
-							class="relative border border-white/5 bg-white/[0.01] p-8 transition-all hover:bg-white/[0.03] md:p-12"
-						>
-							<div class="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
-								<div class="flex flex-col gap-2">
-									<span class="text-[10px] font-bold tracking-widest text-white/20 uppercase"
-										>Workshop Fee</span
-									>
-									<span class="font-serif text-5xl font-light text-white"
-										>{selectedLocation === 'India' ? '₹500' : '$15'}</span
-									>
+					{:else if currentStep === 4}
+						<div in:fade class="space-y-12 py-6 text-center">
+							<div class="space-y-8 border border-white/10 bg-white/[0.02] p-10 shadow-2xl">
+								<div class="mx-auto h-64 w-64 bg-white p-4 shadow-inner">
+									<img
+										src="/images/payqrcodeimage.jpeg"
+										alt="QR"
+										class="h-full w-full object-contain"
+									/>
 								</div>
-								<div class="max-w-lg flex-grow space-y-4 md:text-right">
-									<div class="flex items-center justify-between md:justify-end md:gap-6">
-										<p class="text-[9px] font-bold tracking-[0.2em] text-white/30 uppercase">
-											UPI Transfer ID
-										</p>
-										<span class="text-[8px] font-bold tracking-widest text-[#C5A059] uppercase"
-											>Tap to Copy</span
-										>
-									</div>
+								<div class="space-y-3">
+									<p class="font-serif text-7xl tracking-tighter text-white">
+										{localUser.location === 'India' ? '₹500' : '$15'}
+									</p>
 									<button
 										type="button"
-										onclick={() => copyToClipboard('alamelustudio27@okhdfcbank')}
-										class="group relative flex w-full cursor-pointer items-center justify-center border-b-2 border-[#C5A059]/30 bg-black/60 py-6 transition-all hover:border-[#C5A059] hover:bg-black/80 md:w-auto md:px-10"
+										onclick={() => copyToClipboard('alamelustudio27@okicici')}
+										class="text-sm font-black tracking-[0.3em] text-[#C5A059] hover:text-white"
+										>ALAMELUSTUDIO27@OKICICI 📋</button
 									>
-										<code class="font-sans text-[15px] font-bold tracking-[0.1em] text-white"
-											>alamelustudio27@okhdfcbank</code
-										>
-									</button>
 								</div>
 							</div>
-						</div>
-					</div>
-
-					<div
-						class="flex flex-col gap-8 border-t border-white/5 pt-12 md:flex-row md:items-center md:justify-between"
-					>
-						<div class="flex items-center gap-4">
-							<label class="relative inline-flex cursor-pointer items-center">
-								<input type="checkbox" bind:checked={rememberMe} class="peer hidden" />
-								<div
-									class="h-6 w-11 rounded-full bg-white/10 transition-colors peer-checked:bg-[#C5A059]/40"
-								></div>
-								<div
-									class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white/40 transition-all peer-checked:translate-x-5 peer-checked:bg-[#C5A059]"
-								></div>
-							</label>
-							<div class="flex flex-col">
-								<span class="text-[11px] font-bold tracking-[0.1em] text-white/50 uppercase"
-									>Remember My Profile</span
+							<div class="space-y-4">
+								<a
+									href="https://wa.me/918907845234?text={encodeURIComponent(
+										'Namaste, I am ' + localUser.name + '. I have paid registration fee.'
+									)}"
+									target="_blank"
+									class="flex w-full items-center justify-center gap-4 bg-[#C5A059] py-6 text-sm font-black text-black uppercase shadow-xl transition-all hover:bg-white"
+									>✅ I HAVE PAID (WHATSAPP CONFIRM)</a
 								>
-								<span class="text-[10px] font-medium tracking-wider text-[#C5A059]/60 uppercase"
-									>Secure local storage</span
-								>
+								<p class="text-[12px] font-black tracking-widest text-[#C5A059] uppercase">
+									A screenshot is required for confirmation
+								</p>
 							</div>
 						</div>
+					{:else if currentStep === 5}
+						<div in:fade class="space-y-12">
+							<h3 class="text-[13px] font-black tracking-[0.3em] text-white/60 uppercase">
+								05. Waiver & Consent
+							</h3>
+							<div
+								class="h-80 space-y-6 overflow-y-auto border border-white/20 bg-black p-8 text-base leading-relaxed text-white/80 shadow-inner"
+							>
+								<p>
+									<strong class="text-[#C5A059] uppercase">Medical Clearance:</strong> I confirm I have
+									consulted with my Doctor and have permission to participate.
+								</p>
+								<p>
+									<strong class="text-[#C5A059] uppercase">Liability:</strong> I agree that Anvaya Collectives
+									shall NOT be held liable for any injury during participation.
+								</p>
+							</div>
+							<div
+								class="border-b border-white/30 pb-3 transition-colors focus-within:border-[#C5A059]"
+							>
+								<label
+									class="mb-1 block text-[12px] font-black tracking-widest text-white/50 uppercase"
+									>Digital Signature</label
+								>
+								<input
+									type="text"
+									bind:value={localUser.signature}
+									required
+									class="w-full bg-transparent py-3 font-serif text-4xl text-white italic outline-none"
+									placeholder="Type Full Name"
+								/>
+							</div>
+						</div>
+					{/if}
 
-						<button
-							type="submit"
-							disabled={isSubmitting}
-							class="w-full bg-[#C5A059] px-16 py-6 text-[11px] font-bold tracking-[0.4em] text-black uppercase transition-all hover:bg-white active:scale-[0.98] disabled:opacity-50 md:w-auto"
-						>
-							{isSubmitting ? 'Syncing...' : 'Submit Inquiry'}
-						</button>
+					<div class="mt-auto flex items-center justify-between border-t border-white/10 pt-12">
+						{#if currentStep > 1}
+							<button
+								type="button"
+								onclick={() => goToStep(currentStep - 1)}
+								class="py-4 text-sm font-black tracking-[0.3em] text-white uppercase transition-colors hover:text-[#C5A059]"
+								>← Back</button
+							>
+						{:else}<div></div>{/if}
+
+						{#if currentStep < totalSteps}
+							<button
+								type="button"
+								onclick={() => goToStep(currentStep + 1)}
+								class="bg-white px-14 py-6 text-sm font-black tracking-[0.3em] text-black uppercase shadow-xl transition-all hover:bg-[#C5A059]"
+								>Continue →</button
+							>
+						{:else}
+							<button
+								type="submit"
+								disabled={isSubmitting}
+								class="bg-[#C5A059] px-16 py-6 text-sm font-black tracking-[0.3em] text-black uppercase shadow-xl transition-all hover:bg-white disabled:opacity-50"
+								>Finalize Inquiry</button
+							>
+						{/if}
 					</div>
 				</form>
 			{/if}
@@ -417,31 +543,10 @@
 	</div>
 </div>
 
-{#if showCopyToast}
-	<div
-		transition:fade
-		class="fixed bottom-10 left-1/2 z-[200] -translate-x-1/2 border border-[#C5A059]/30 bg-[#121212] px-8 py-4 shadow-2xl backdrop-blur-md"
-	>
-		<p class="text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">UPI ID Copied</p>
-	</div>
-{/if}
-
 <style>
 	:global(body) {
 		background-color: #070707;
 		-webkit-font-smoothing: antialiased;
-	}
-	select option {
-		background-color: #1a1a1a;
-		color: white;
-		padding: 12px;
-	}
-	select:focus {
-		outline: none;
-		border-color: #c5a059;
-	}
-	code {
-		font-family: inherit;
 	}
 	.font-serif {
 		font-family: 'Cinzel', serif;
