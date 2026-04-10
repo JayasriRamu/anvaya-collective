@@ -154,7 +154,7 @@
 <div
 	class="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#070707] font-sans text-white md:flex-row"
 >
-	<div class="relative h-[30vh] w-full shrink-0 border-r border-white/5 md:h-screen md:w-[35%]">
+	<div class="relative h-[25vh] w-full shrink-0 md:h-screen md:w-[35%]">
 		<img
 			src="/images/background-hero.jpg"
 			alt="Dancer"
@@ -166,114 +166,112 @@
 	</div>
 
 	<div
-		class="flex h-screen w-full flex-col overflow-y-auto px-8 py-12 md:w-[65%] md:px-20 md:py-16"
+		class="flex h-[75vh] w-full flex-col overflow-y-auto px-6 py-10 md:h-screen md:w-[65%] md:px-20 md:py-16"
 	>
 		<div class="mx-auto w-full max-w-4xl">
 			{#if formSubmitted}
-				<div in:fly={{ y: 30 }} class="space-y-8 py-20 text-center">
+				<div in:fly={{ y: 30 }} class="space-y-8 py-16 text-center">
 					<div
-						class="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#C5A059] text-4xl shadow-[0_0_20px_rgba(197,160,89,0.2)]"
+						class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#C5A059] text-3xl"
 					>
 						✨
 					</div>
-					<h2 class="font-serif text-5xl text-[#C5A059] italic">Registered</h2>
+					<h2 class="font-serif text-4xl text-[#C5A059] italic md:text-5xl">Registered</h2>
 					<button
 						onclick={() => (formSubmitted = false)}
-						class="bg-[#C5A059] px-12 py-5 text-sm font-black text-black uppercase transition-all hover:bg-white"
-						>View Stored Profile</button
+						class="bg-[#C5A059] px-8 py-4 text-xs font-black text-black uppercase transition-all hover:bg-white"
+						>View Profile</button
 					>
 				</div>
 			{:else if hasExistingProfile && !isEditing}
 				<div
 					in:fade
-					class="space-y-10 border border-white/10 bg-white/[0.03] p-12 shadow-2xl backdrop-blur-sm"
+					class="space-y-10 border border-white/10 bg-white/[0.03] p-8 shadow-2xl backdrop-blur-sm md:p-12"
 				>
 					<div class="border-b border-white/10 pb-8 text-center">
-						<p class="mb-2 text-[11px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">
+						<p class="mb-2 text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">
 							Workshop Profile
 						</p>
-						<h2 class="font-serif text-4xl tracking-tight text-white italic">
+						<h2 class="font-serif text-3xl tracking-tight text-white italic md:text-4xl">
 							Namaste, {localUser.name}
 						</h2>
 					</div>
-					<div class="grid grid-cols-2 gap-10">
+					<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
 						<div>
-							<p class="mb-1 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+							<p class="mb-1 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">
 								WhatsApp
 							</p>
-							<p class="text-2xl font-light text-white">
+							<p class="text-xl text-white">
 								+{localUser.location === 'Outside' ? '' : '91 '}{localUser.phone}
 							</p>
 						</div>
 						<div>
-							<p class="mb-1 text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+							<p class="mb-1 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">
 								Track
 							</p>
-							<p class="text-xl font-medium text-[#C5A059]">
+							<p class="text-lg font-bold text-[#C5A059]">
 								{localUser.interest.join(', ') || 'General'}
 							</p>
 						</div>
 					</div>
-					<div class="flex gap-4 pt-6">
+					<div class="flex flex-col gap-4 pt-4 sm:flex-row">
 						<button
 							onclick={() => (isEditing = true)}
-							class="flex-1 bg-[#C5A059] py-5 text-xs font-black text-black uppercase transition-all hover:bg-white"
+							class="flex-1 bg-[#C5A059] py-4 text-xs font-black text-black uppercase transition-all hover:bg-white"
 							>Edit Details</button
 						>
 						<button
 							onclick={handleLogout}
-							class="border border-white/20 px-10 text-xs font-bold text-white uppercase transition-all hover:bg-white/10"
+							class="border border-white/20 px-8 py-4 text-xs font-black text-white uppercase"
 							>Forget Me</button
 						>
 					</div>
 				</div>
 			{:else}
-				<header class="mb-10 border-b border-white/10 pb-8">
-					<div class="mb-6 flex items-center justify-between">
-						<span class="text-[12px] font-black tracking-[0.4em] text-[#C5A059] uppercase"
+				<header class="mb-8 border-b border-white/10 pb-6">
+					<div class="mb-4 flex items-center justify-between">
+						<span class="text-[11px] font-black tracking-[0.3em] text-[#C5A059] uppercase"
 							>Step {currentStep} / {totalSteps}</span
 						>
-						<div class="flex gap-3">
+						<div class="flex gap-2">
 							{#each Array(totalSteps) as _, i}
 								<button
 									onclick={() => goToStep(i + 1)}
-									class="h-1.5 rounded-full transition-all {currentStep === i + 1
-										? 'w-12 bg-[#C5A059]'
-										: 'w-8 bg-white/10'}"
+									class="h-1 rounded-full transition-all {currentStep === i + 1
+										? 'w-10 bg-[#C5A059]'
+										: 'w-5 bg-white/10'}"
 								></button>
 							{/each}
 						</div>
 					</div>
-					<h1 class="font-serif text-6xl tracking-tight text-[#C5A059] italic">Anvaya Inquiry</h1>
+					<h1 class="font-serif text-4xl tracking-tight text-[#C5A059] italic md:text-6xl">
+						Anvaya Inquiry
+					</h1>
 				</header>
 
-				<form method="POST" action="?/submit" onsubmit={handleSubmit} class="space-y-14">
+				<form method="POST" action="?/submit" onsubmit={handleSubmit} class="space-y-12">
 					{#if currentStep === 1}
-						<div in:fade class="space-y-12">
-							<div class="grid grid-cols-1 gap-12 md:grid-cols-2">
-								<div
-									class="border-b border-white/30 pb-3 transition-colors focus-within:border-[#C5A059]"
-								>
+						<div in:fade class="space-y-10">
+							<div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+								<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
 									<label
-										class="mb-1 block text-[12px] font-black tracking-widest text-white/50 uppercase"
+										class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 										>Full Name</label
 									>
 									<input
 										type="text"
 										bind:value={localUser.name}
 										required
-										class="w-full bg-transparent py-2 text-2xl font-light text-white outline-none"
+										class="w-full bg-transparent py-1 text-xl font-light text-white outline-none"
 									/>
 								</div>
-								<div
-									class="border-b border-white/30 pb-3 transition-colors focus-within:border-[#C5A059]"
-								>
+								<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
 									<label
-										class="mb-1 block text-[12px] font-black tracking-widest text-white/50 uppercase"
+										class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 										>WhatsApp</label
 									>
 									<div class="flex items-center gap-3">
-										<span class="text-2xl font-light text-[#C5A059]"
+										<span class="text-xl font-light text-[#C5A059]"
 											>{localUser.location === 'Outside' ? '+' : '+91'}</span
 										>
 										<input
@@ -281,21 +279,21 @@
 											bind:value={localUser.phone}
 											required
 											oninput={validateMobile}
-											class="w-full bg-transparent py-2 text-2xl font-light text-white outline-none"
+											class="w-full bg-transparent py-1 text-xl font-light text-white outline-none"
 										/>
 									</div>
 								</div>
 							</div>
 
-							<div class="max-w-sm space-y-4">
-								<label class="text-[12px] font-black tracking-widest text-white/50 uppercase"
-									>Region of Residence</label
+							<div class="max-w-sm space-y-3">
+								<label class="text-[11px] font-black tracking-widest text-white/40 uppercase"
+									>Region</label
 								>
 								<div class="relative">
 									<button
 										type="button"
 										onclick={() => (isLocationOpen = !isLocationOpen)}
-										class="flex w-full items-center justify-between border border-white/20 bg-[#151515] p-5 text-base font-bold text-white shadow-xl"
+										class="flex w-full items-center justify-between border border-white/20 bg-[#151515] p-4 text-base font-bold text-white shadow-xl"
 									>
 										<span
 											>{localUser.location === 'Outside'
@@ -306,7 +304,7 @@
 									</button>
 									{#if isLocationOpen}
 										<div
-											class="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden border border-white/20 bg-[#1a1a1a] shadow-2xl"
+											class="absolute top-full right-0 left-0 z-50 mt-1 border border-white/20 bg-[#1a1a1a] shadow-2xl"
 										>
 											<button
 												type="button"
@@ -314,7 +312,7 @@
 													localUser.location = 'India';
 													isLocationOpen = false;
 												}}
-												class="w-full p-5 text-left text-base font-bold text-white transition-colors hover:bg-[#C5A059] hover:text-black"
+												class="w-full p-4 text-left text-base font-bold text-white transition-colors hover:bg-[#C5A059] hover:text-black"
 												>🇮🇳 Inside India</button
 											>
 											<button
@@ -323,7 +321,7 @@
 													localUser.location = 'Outside';
 													isLocationOpen = false;
 												}}
-												class="w-full p-5 text-left text-base font-bold text-white transition-colors hover:bg-[#C5A059] hover:text-black"
+												class="w-full p-4 text-left text-base font-bold text-white transition-colors hover:bg-[#C5A059] hover:text-black"
 												>🌍 Outside India</button
 											>
 										</div>
@@ -332,44 +330,39 @@
 							</div>
 
 							<div class="space-y-6">
-								<label class="text-[12px] font-black tracking-widest text-white/50 uppercase"
+								<label class="text-[11px] font-black tracking-widest text-white/40 uppercase"
 									>Select Age Group</label
 								>
-								<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
+								<div class="grid grid-cols-4 gap-2 sm:grid-cols-7">
 									{#each ageGroups as age}
 										<button
 											type="button"
 											onclick={() => (localUser.ageGroup = age)}
-											class="h-14 border text-sm font-black uppercase transition-all {localUser.ageGroup ===
+											class="h-12 border text-xs font-black uppercase transition-all {localUser.ageGroup ===
 											age
-												? 'border-[#C5A059] bg-[#C5A059] text-black shadow-[0_0_15px_rgba(197,160,89,0.3)]'
-												: 'border-white/10 bg-white/5 text-white hover:border-white/40'}"
+												? 'border-[#C5A059] bg-[#C5A059] text-black shadow-lg'
+												: 'border-white/10 bg-white/5 text-white/60 hover:border-white/40'}"
 											>{age}</button
 										>
 									{/each}
 								</div>
 							</div>
 
-							<div class="border-t border-white/10 pt-8">
-								<label class="group flex cursor-pointer items-center gap-5">
+							<div class="border-t border-white/10 pt-6">
+								<label class="group flex cursor-pointer items-center gap-4">
 									<div class="relative">
 										<input type="checkbox" bind:checked={rememberMe} class="peer hidden" />
 										<div
-											class="h-6 w-12 rounded-full border border-white/5 bg-white/10 peer-checked:bg-[#C5A059]/40"
+											class="h-6 w-11 rounded-full border border-white/5 bg-white/10 peer-checked:bg-[#C5A059]/40"
 										></div>
 										<div
-											class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white/60 transition-all peer-checked:translate-x-6 peer-checked:bg-[#C5A059]"
+											class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white/60 transition-all peer-checked:translate-x-5 peer-checked:bg-[#C5A059]"
 										></div>
 									</div>
-									<div class="flex flex-col">
-										<span
-											class="text-[12px] font-black tracking-widest text-white/70 uppercase transition-colors group-hover:text-white"
-											>Remember Me</span
-										>
-										<span class="text-[10px] font-bold tracking-tighter text-[#C5A059] uppercase"
-											>Save details locally</span
-										>
-									</div>
+									<span
+										class="text-[11px] font-black tracking-widest text-white/60 uppercase transition-colors group-hover:text-white"
+										>Remember Me</span
+									>
 								</label>
 							</div>
 						</div>
@@ -378,35 +371,30 @@
 							<h3 class="text-[13px] font-black tracking-[0.3em] text-white/60 uppercase">
 								02. Body Intelligence
 							</h3>
-							<div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+							<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 								{#each healthOptions as option}
 									<label
-										class="group flex cursor-pointer items-center gap-4 border border-white/10 bg-white/[0.03] p-5 transition-all hover:border-[#C5A059]"
+										class="group flex cursor-pointer items-center gap-3 border border-white/10 bg-white/[0.03] p-4 transition-all hover:border-[#C5A059]"
 									>
 										<input
 											type="checkbox"
 											bind:group={localUser.healthHistory}
 											value={option}
-											class="h-5 w-5 accent-[#C5A059]"
+											class="h-4 w-4 accent-[#C5A059]"
 										/>
 										<span
-											class="text-[11px] font-black tracking-tight text-white/70 uppercase group-hover:text-white"
+											class="text-[10px] font-black tracking-tight text-white/70 uppercase group-hover:text-white"
 											>{option}</span
 										>
 									</label>
 								{/each}
 							</div>
-							<div class="space-y-4">
-								<label class="text-[12px] font-black tracking-widest text-white/50 uppercase"
-									>Medical Notes</label
-								>
-								<textarea
-									bind:value={localUser.medications}
-									rows="5"
-									class="w-full border border-white/20 bg-white/5 p-5 text-xl font-light text-white transition-colors outline-none focus:border-[#C5A059]"
-									placeholder="List medications or restrictions..."
-								></textarea>
-							</div>
+							<textarea
+								bind:value={localUser.medications}
+								rows="5"
+								class="w-full border border-white/20 bg-white/5 p-4 text-lg font-light text-white outline-none focus:border-[#C5A059]"
+								placeholder="Medical notes..."
+							></textarea>
 						</div>
 					{:else if currentStep === 3}
 						<div in:fade class="space-y-10">
@@ -414,18 +402,18 @@
 								03. Track Preference
 							</h3>
 							<div
-								class="border border-[#C5A059]/40 bg-black p-6 text-center shadow-[inset_0_0_20px_rgba(197,160,89,0.1)]"
+								class="border border-[#C5A059]/40 bg-black p-5 text-center shadow-[inset_0_0_20px_rgba(197,160,89,0.1)]"
 							>
-								<p class="text-base font-black tracking-widest text-[#C5A059] uppercase italic">
-									{activeDescription || 'Curriculum details will appear here'}
+								<p class="text-sm font-black tracking-widest text-[#C5A059] uppercase italic">
+									{activeDescription || 'Curriculum details'}
 								</p>
 							</div>
-							<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+							<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
 								{#each interests as item}
 									<label
 										onmouseenter={() => (activeDescription = item.desc)}
 										onmouseleave={() => (activeDescription = '')}
-										class="group flex cursor-pointer items-center justify-between border border-white/10 bg-white/5 px-8 py-6 transition-all hover:border-[#C5A059]"
+										class="group flex cursor-pointer items-center justify-between border border-white/10 bg-white/5 px-6 py-5 transition-all hover:border-[#C5A059]"
 									>
 										<span class="text-lg font-medium text-white group-hover:text-[#C5A059]"
 											>{item.name}</span
@@ -434,16 +422,16 @@
 											type="checkbox"
 											bind:group={localUser.interest}
 											value={item.name}
-											class="h-6 w-6 accent-[#C5A059]"
+											class="h-5 w-5 accent-[#C5A059]"
 										/>
 									</label>
 								{/each}
 							</div>
 						</div>
 					{:else if currentStep === 4}
-						<div in:fade class="space-y-12 py-6 text-center">
-							<div class="space-y-8 border border-white/10 bg-white/[0.02] p-10 shadow-2xl">
-								<div class="mx-auto h-64 w-64 bg-white p-4 shadow-inner">
+						<div in:fade class="space-y-10 text-center">
+							<div class="space-y-8 border border-white/10 bg-white/[0.02] p-8 shadow-2xl">
+								<div class="mx-auto h-60 w-60 bg-white p-4 shadow-inner">
 									<img
 										src="/images/payqrcodeimage.jpeg"
 										alt="QR"
@@ -451,13 +439,13 @@
 									/>
 								</div>
 								<div class="space-y-3">
-									<p class="font-serif text-7xl tracking-tighter text-white">
+									<p class="font-serif text-6xl tracking-tighter text-white">
 										{localUser.location === 'India' ? '₹500' : '$15'}
 									</p>
 									<button
 										type="button"
 										onclick={() => copyToClipboard('alamelustudio27@okicici')}
-										class="text-sm font-black tracking-[0.3em] text-[#C5A059] hover:text-white"
+										class="text-xs font-black tracking-[0.2em] text-[#C5A059] hover:text-white"
 										>ALAMELUSTUDIO27@OKICICI 📋</button
 									>
 								</div>
@@ -465,14 +453,14 @@
 							<div class="space-y-4">
 								<a
 									href="https://wa.me/918907845234?text={encodeURIComponent(
-										'Namaste, I am ' + localUser.name + '. I have paid registration fee.'
+										'Namaste, I am ' + localUser.name + '. I have paid fee.'
 									)}"
 									target="_blank"
-									class="flex w-full items-center justify-center gap-4 bg-[#C5A059] py-6 text-sm font-black text-black uppercase shadow-xl transition-all hover:bg-white"
-									>✅ I HAVE PAID (WHATSAPP CONFIRM)</a
+									class="flex w-full items-center justify-center gap-4 bg-[#C5A059] py-5 text-sm font-black text-black uppercase shadow-xl transition-all hover:bg-white"
+									>✅ I HAVE PAID (CONFIRM)</a
 								>
-								<p class="text-[12px] font-black tracking-widest text-[#C5A059] uppercase">
-									A screenshot is required for confirmation
+								<p class="text-[11px] font-black tracking-widest text-[#C5A059] uppercase">
+									Confirm via WhatsApp to secure slot
 								</p>
 							</div>
 						</div>
@@ -482,7 +470,7 @@
 								05. Waiver & Consent
 							</h3>
 							<div
-								class="h-80 space-y-6 overflow-y-auto border border-white/20 bg-black p-8 text-base leading-relaxed text-white/80 shadow-inner"
+								class="h-72 space-y-6 overflow-y-auto border border-white/20 bg-black p-6 text-base leading-relaxed text-white/80 shadow-inner"
 							>
 								<p>
 									<strong class="text-[#C5A059] uppercase">Medical Clearance:</strong> I confirm I have
@@ -497,27 +485,29 @@
 								class="border-b border-white/30 pb-3 transition-colors focus-within:border-[#C5A059]"
 							>
 								<label
-									class="mb-1 block text-[12px] font-black tracking-widest text-white/50 uppercase"
+									class="mb-1 block text-[11px] font-black tracking-widest text-white/50 uppercase"
 									>Digital Signature</label
 								>
 								<input
 									type="text"
 									bind:value={localUser.signature}
 									required
-									class="w-full bg-transparent py-3 font-serif text-4xl text-white italic outline-none"
-									placeholder="Type Full Name"
+									class="w-full bg-transparent py-2 font-serif text-4xl text-white italic outline-none"
+									placeholder="Full Name"
 								/>
 							</div>
 						</div>
 					{/if}
 
-					<div class="mt-auto flex items-center justify-between border-t border-white/10 pt-12">
+					<div
+						class="mt-auto flex items-center justify-between border-t border-white/10 pt-10 pb-10"
+					>
 						{#if currentStep > 1}
 							<button
 								type="button"
 								onclick={() => goToStep(currentStep - 1)}
-								class="py-4 text-sm font-black tracking-[0.3em] text-white uppercase transition-colors hover:text-[#C5A059]"
-								>← Back</button
+								class="py-3 text-xs font-black tracking-[0.2em] text-white uppercase transition-colors hover:text-[#C5A059]"
+								>Back</button
 							>
 						{:else}<div></div>{/if}
 
@@ -525,15 +515,15 @@
 							<button
 								type="button"
 								onclick={() => goToStep(currentStep + 1)}
-								class="bg-white px-14 py-6 text-sm font-black tracking-[0.3em] text-black uppercase shadow-xl transition-all hover:bg-[#C5A059]"
-								>Continue →</button
+								class="bg-white px-8 py-4 text-xs font-black tracking-[0.2em] text-black uppercase shadow-xl transition-all hover:bg-[#C5A059] md:px-14 md:py-6 md:text-sm"
+								>Continue</button
 							>
 						{:else}
 							<button
 								type="submit"
 								disabled={isSubmitting}
-								class="bg-[#C5A059] px-16 py-6 text-sm font-black tracking-[0.3em] text-black uppercase shadow-xl transition-all hover:bg-white disabled:opacity-50"
-								>Finalize Inquiry</button
+								class="bg-[#C5A059] px-10 py-4 text-xs font-black tracking-[0.2em] text-black uppercase shadow-xl transition-all hover:bg-white disabled:opacity-50 md:px-16 md:py-6 md:text-sm"
+								>Finalize</button
 							>
 						{/if}
 					</div>
