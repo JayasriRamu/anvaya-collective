@@ -2,14 +2,10 @@
 	import './layout.css';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition'; // Added for the smooth entry/exit
 	import type { LayoutData } from './$types';
 
 	let { data, children }: { data: LayoutData; children: any } = $props();
 	let isMenuOpen = $state(false);
-
-	// NEW: Logic for the Workshop Flash Overlay
-	let showFlash = $state(false);
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
@@ -18,43 +14,12 @@
 	let isAdminPage = $derived(page.url.pathname.startsWith('/admin'));
 
 	onMount(() => {
-		// Only show the flash if we are on the Home page ('/')
-		if (page.url.pathname === '/') {
-			showFlash = true;
-			// Hide the flash after 10 seconds (10000ms)
-			setTimeout(() => {
-				showFlash = false;
-			}, 10000);
-		}
-
 		const navEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
 		if (navEntries.length > 0 && navEntries[0].type === 'reload') {
 			console.log('Syncing stats on reload...');
 		}
 	});
 </script>
-
-{#if showFlash && !isAdminPage}
-	<div
-		transition:fade={{ duration: 800 }}
-		class="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-	>
-		<div class="relative max-w-[90vw] md:max-w-[500px]">
-			<button
-				onclick={() => (showFlash = false)}
-				class="absolute -top-12 right-0 text-[10px] font-black tracking-widest text-white/50 uppercase hover:text-[#C5A059]"
-			>
-				Close [x]
-			</button>
-
-			<img
-				src="/images/workshop1.jpeg"
-				alt="Bio-Somatic Workshop"
-				class="h-auto w-full rounded-lg border border-[#C5A059]/30 shadow-[0_0_50px_rgba(197,160,89,0.2)]"
-			/>
-		</div>
-	</div>
-{/if}
 
 <div class="relative flex min-h-screen flex-col overflow-x-hidden bg-[#070707] text-white">
 	{#if !isAdminPage}
@@ -115,6 +80,15 @@
 						class="bg-[#C5A059] px-6 py-2 text-[10px] font-black text-black uppercase transition-colors hover:bg-white"
 						>Connect</a
 					>
+					<a
+						href="/admin"
+						title="Admin Portal"
+						class="ml-2 p-2 text-stone-600 transition-colors hover:text-amber-400"
+					>
+						<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z"/>
+						</svg>
+					</a>
 				</div>
 
 				<button class="p-2 text-white lg:hidden" onclick={toggleMenu}>

@@ -59,6 +59,21 @@ export const account = sqliteTable('account', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
+export const content = sqliteTable('content', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	type: text('type').notNull(),
+	title: text('title').notNull(),
+	url: text('url'),
+	tags: text('tags'),
+	description: text('description'),
+	syllabus: text('syllabus'),
+	difficulty: text('difficulty'),
+	enrollmentCta: text('enrollment_cta'),
+	posterImage: text('poster_image'),
+	expiresAt: text('expires_at'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+});
+
 export const verification = sqliteTable('verification', {
 	id: text('id').primaryKey(),
 	identifier: text('identifier').notNull(),
