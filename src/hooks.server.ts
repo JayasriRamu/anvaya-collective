@@ -51,28 +51,31 @@ const mainHandle: Handle = async ({ event, resolve }) => {
 	event.locals.userMobile = event.cookies.get('user_mobile') || null;
 	event.locals.formSubmitted = event.cookies.get('form_submitted') === 'true';
 
-	// --- B. Admin Security Guard (DISABLED for testing) ---
-	// if (event.url.pathname.startsWith('/admin') && !event.url.pathname.includes('/admin/login')) {
-	// 	const session = await auth.api.getSession({
-	// 		headers: event.request.headers
-	// 	});
+	// --- B. Admin Security Guard ---
+	if (event.url.pathname.startsWith('/admin') && !event.url.pathname.includes('/admin/login')) {
+		const session = await auth.api.getSession({
+			headers: event.request.headers
+		});
 
-	// 	// 1. Redirect to login if no session exists
-	// 	if (!session) {
-	// 		throw redirect(302, '/admin/login');
-	// 	}
+		// 1. Redirect to login if no session exists
+		if (!session) {
+			throw redirect(302, '/admin/login');
+		}
 
-	// 	// 2. Email Validation Logic
-	// 	// Split the env string into an array and trim spaces
-	// 	const ALLOWED_ADMINS = env.ADMIN_EMAILS.split(',').map((email) => email.trim().toLowerCase());
-	// 	const userEmail = session.user.email.toLowerCase();
+		// 2. Email Validation Logic
+		// Split the env string into an array, trim spaces, and drop empty entries
+		const ALLOWED_ADMINS = (env.ADMIN_EMAILS || '')
+			.split(',')
+			.map((email) => email.trim().toLowerCase())
+			.filter(Boolean);
+		const userEmail = session.user.email.toLowerCase();
 
-	// 	// Check if the logged-in user is in the allowlist
-	// 	if (!ALLOWED_ADMINS.includes(userEmail)) {
-	// 		console.warn('Unauthorized access attempt blocked for:', userEmail);
-	// 		throw redirect(302, '/');
-	// 	}
-	// }
+		// Check if the logged-in user is in the allowlist
+		if (!ALLOWED_ADMINS.includes(userEmail)) {
+			console.warn('Unauthorized access attempt blocked for:', userEmail);
+			throw redirect(302, '/');
+		}
+	}
 
 	// --- C. Resolve & Privacy Headers ---
 	const response = await resolve(event);

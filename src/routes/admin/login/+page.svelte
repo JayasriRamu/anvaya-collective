@@ -30,5 +30,13 @@
 			<img src="https://www.google.com/favicon.ico" alt="" class="h-4 w-4" />
 			Continue with Google
 		</button>
+
+		<a
+			href="/"
+			class="mt-6 inline-flex items-center justify-center gap-2 border border-white/15 px-8 py-3 text-xs font-bold tracking-[0.2em] text-white/70 uppercase transition-all hover:border-[#C5A059] hover:text-[#C5A059]"
+		>
+			<span aria-hidden="true">←</span>
+			Back to Site
+		</a>
 	</div>
 </div>

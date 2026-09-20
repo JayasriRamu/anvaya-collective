@@ -7,9 +7,16 @@
 		message?: string;
 		errors?: Record<string, string | undefined>;
 		values?: {
-			type?: string; title?: string; url?: string; tags?: string;
-			description?: string; syllabus?: string; difficulty?: string;
-			enrollmentCta?: string; posterImage?: string; expiresAt?: string;
+			type?: string;
+			title?: string;
+			url?: string;
+			tags?: string;
+			description?: string;
+			syllabus?: string;
+			difficulty?: string;
+			enrollmentCta?: string;
+			posterImage?: string;
+			expiresAt?: string;
 		};
 	}
 
@@ -33,7 +40,11 @@
 	let contentItems = $derived(data?.contentItems ?? []);
 
 	const contentTypes = [
-		{ value: 'YouTube Video', label: 'YouTube URL', placeholder: 'https://youtube.com/watch?v=...' },
+		{
+			value: 'YouTube Video',
+			label: 'YouTube URL',
+			placeholder: 'https://youtube.com/watch?v=...'
+		},
 		{ value: 'Course Material', label: 'Material Link', placeholder: 'https://...' },
 		{ value: 'Workshop Slides', label: 'Slide Deck Link', placeholder: 'https://...' },
 		{ value: 'Poster', label: 'Poster Link', placeholder: 'https://...' },
@@ -53,7 +64,9 @@
 	let formAction = $derived(editingItem ? '?/updateContent' : '?/add');
 	let submitLabel = $derived(editingItem ? 'Update Content' : 'Save');
 
-	const linkLabel = $derived(contentTypes.find((c) => c.value === selectedType)?.label ?? 'Link URL');
+	const linkLabel = $derived(
+		contentTypes.find((c) => c.value === selectedType)?.label ?? 'Link URL'
+	);
 	const linkPlaceholder = $derived(
 		contentTypes.find((c) => c.value === selectedType)?.placeholder ?? 'https://...'
 	);
@@ -135,52 +148,74 @@
 	});
 </script>
 
-<div class="min-h-screen bg-[#070707] font-sans text-white p-6">
+<div class="p-6">
 	{#if toast}
 		<div
-			class="fixed top-6 left-1/2 z-[300] flex w-full max-w-md -translate-x-1/2 items-center gap-3 rounded border px-5 py-4 shadow-2xl backdrop-blur-md {toast.type === 'success'
+			class="fixed top-6 left-1/2 z-[300] flex w-full max-w-md -translate-x-1/2 items-center gap-3 rounded border px-5 py-4 shadow-2xl backdrop-blur-md {toast.type ===
+			'success'
 				? 'border-emerald-700/60 bg-emerald-900/80 text-emerald-200'
 				: 'border-red-700/60 bg-red-900/80 text-red-200'}"
 		>
 			{#if toast.type === 'success'}
-				<svg class="h-5 w-5 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+				<svg
+					class="h-5 w-5 shrink-0 text-emerald-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2.5"
+						d="M5 13l4 4L19 7"
+					/>
 				</svg>
 			{:else}
-				<svg class="h-5 w-5 shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+				<svg
+					class="h-5 w-5 shrink-0 text-red-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2.5"
+						d="M6 18L18 6M6 6l12 12"
+					/>
 				</svg>
 			{/if}
 			<span class="flex-1 text-sm font-medium">{toast.message}</span>
-			<button onclick={dismissToast} class="shrink-0 opacity-60 transition-opacity hover:opacity-100">
+			<button
+				onclick={dismissToast}
+				class="shrink-0 opacity-60 transition-opacity hover:opacity-100"
+			>
 				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M6 18L18 6M6 6l12 12"
+					/>
 				</svg>
 			</button>
 		</div>
 	{/if}
-	<div class="mx-auto max-w-3xl mb-12">
-		<div class="border border-white/10 bg-white/[0.02] p-8">
-			<a
-				href="/"
-				class="mb-6 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-wide text-amber-500 transition-colors hover:text-amber-400"
-			>
-				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-				</svg>
-				Back to Main Site
-			</a>
+	<div class="mx-auto mb-12 max-w-3xl">
+		<div class="border border-t-2 border-white/10 border-t-[#C5A059] bg-white/[0.02] p-8">
 			<h1 class="mb-8 font-serif text-3xl text-[#C5A059] uppercase italic">
 				{editingItem ? 'Edit Content' : 'Add Content'}
 			</h1>
 
-			<form method="POST" action={formAction} class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<form method="POST" action={formAction} class="grid grid-cols-1 gap-6 md:grid-cols-2">
 				{#if editingItem}
 					<input type="hidden" name="id" value={editingItem.id} />
 				{/if}
 
 				<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-					<label for="type" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+					<label
+						for="type"
+						class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 						>Content Type</label
 					>
 					<select
@@ -189,7 +224,9 @@
 						class="w-full appearance-none bg-stone-900 py-1 text-xl font-light text-amber-100 outline-none"
 					>
 						{#each contentTypes as ct}
-							<option value={ct.value} selected={selectedType === ct.value}
+							<option
+								value={ct.value}
+								selected={selectedType === ct.value}
 								class="bg-stone-900 text-amber-100">{ct.value}</option
 							>
 						{/each}
@@ -207,7 +244,9 @@
 				</div>
 
 				<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-					<label for="tags" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+					<label
+						for="tags"
+						class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 						>Category / Tags</label
 					>
 					<input
@@ -220,8 +259,10 @@
 					/>
 				</div>
 
-				<div class="md:col-span-2 border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-					<label for="title" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+				<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059] md:col-span-2">
+					<label
+						for="title"
+						class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 						>Title</label
 					>
 					<input
@@ -235,7 +276,9 @@
 				</div>
 
 				<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-					<label for="url" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+					<label
+						for="url"
+						class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 						>{linkLabel}</label
 					>
 					<input
@@ -249,7 +292,9 @@
 				</div>
 
 				<div>
-					<label for="expiresAt" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+					<label
+						for="expiresAt"
+						class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 						>Event Date / Expiry Date</label
 					>
 					<input
@@ -257,12 +302,14 @@
 						type="date"
 						name="expiresAt"
 						value={editingItem?.expiresAt ?? form?.values?.expiresAt ?? ''}
-						class="w-full rounded border border-stone-700 bg-stone-900 p-3 text-amber-200 outline-none focus:border-amber-500 [color-scheme:dark]"
+						class="w-full rounded border border-stone-700 bg-stone-900 p-3 text-amber-200 [color-scheme:dark] outline-none focus:border-amber-500"
 					/>
 				</div>
 
-				<div class="md:col-span-2 border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-					<label for="description" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+				<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059] md:col-span-2">
+					<label
+						for="description"
+						class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 						>Description</label
 					>
 					<textarea
@@ -276,7 +323,9 @@
 
 				{#if isCourseType}
 					<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-						<label for="difficulty" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+						<label
+							for="difficulty"
+							class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 							>Difficulty Level</label
 						>
 						<select
@@ -289,14 +338,16 @@
 								<option
 									value={level}
 									selected={(editingItem?.difficulty ?? form?.values?.difficulty) === level}
-									class="bg-stone-900 text-amber-100"
-								>{level}</option>
+									class="bg-stone-900 text-amber-100">{level}</option
+								>
 							{/each}
 						</select>
 					</div>
 
 					<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-						<label for="enrollmentCta" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+						<label
+							for="enrollmentCta"
+							class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 							>Enrollment CTA / Contact Info</label
 						>
 						<input
@@ -309,8 +360,10 @@
 						/>
 					</div>
 
-					<div class="md:col-span-2 border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-						<label for="syllabus" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+					<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059] md:col-span-2">
+						<label
+							for="syllabus"
+							class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 							>Module / Syllabus Summary</label
 						>
 						<textarea
@@ -325,8 +378,10 @@
 				{/if}
 
 				{#if isPosterType}
-					<div class="md:col-span-2 border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
-						<label for="posterImage" class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
+					<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059] md:col-span-2">
+						<label
+							for="posterImage"
+							class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
 							>Image URL / Poster Image</label
 						>
 						<input
@@ -350,7 +405,7 @@
 					<p class="text-xs text-red-400">{form.errors.url}</p>
 				{/if}
 
-				<div class="md:col-span-2 flex justify-end gap-4">
+				<div class="flex justify-end gap-4 md:col-span-2">
 					<button
 						type="submit"
 						class="w-auto bg-[#C5A059] px-8 py-3 text-xs font-black text-black uppercase transition-all hover:bg-white"
@@ -373,13 +428,18 @@
 
 	<div class="mx-auto max-w-7xl">
 		<div>
-			<h2 class="mb-6 font-serif text-2xl text-[#C5A059] uppercase italic">
-				Content Library ({contentItems.length})
-			</h2>
+			<div class="mb-6 flex items-center gap-3">
+				<div class="h-8 w-1 bg-gradient-to-b from-[#E0BC71] to-[#C5A059]"></div>
+				<h2 class="font-serif text-2xl text-[#C5A059] uppercase italic">
+					Content Library ({contentItems.length})
+				</h2>
+			</div>
 
 			<div class="overflow-x-auto border border-white/10 bg-[#0d0d0d]">
 				<table class="w-full table-auto text-left">
-					<thead class="bg-white/[0.05] text-[10px] font-black tracking-[0.2em] text-[#C5A059] uppercase">
+					<thead
+						class="bg-white/[0.05] text-[10px] font-black tracking-[0.2em] text-[#C5A059] uppercase"
+					>
 						<tr>
 							<th class="w-[22%] px-6 py-5">Title</th>
 							<th class="w-[10%] px-6 py-5">Type</th>
@@ -395,12 +455,16 @@
 						{#each contentItems as item (item.id)}
 							<tr class="group transition-colors hover:bg-white/[0.02]">
 								<td class="px-6 py-5">
-									<div class="text-sm font-bold text-white transition-colors group-hover:text-[#C5A059]">
+									<div
+										class="text-sm font-bold text-white transition-colors group-hover:text-[#C5A059]"
+									>
 										{item.title}
 									</div>
 								</td>
 								<td class="px-6 py-5">
-									<span class="inline-block border border-[#C5A059]/40 bg-[#C5A059]/10 px-2 py-0.5 text-[10px] font-black tracking-widest text-[#C5A059] uppercase">
+									<span
+										class="inline-block border border-[#C5A059]/40 bg-[#C5A059]/10 px-2 py-0.5 text-[10px] font-black tracking-widest text-[#C5A059] uppercase"
+									>
 										{item.type}
 									</span>
 								</td>
@@ -413,16 +477,25 @@
 										target="_blank"
 										class="text-[11px] text-[#C5A059] underline underline-offset-2 hover:text-white"
 									>
-										{item.url ? item.url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') + '…' : '—'}
+										{item.url
+											? item.url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') + '…'
+											: '—'}
 									</a>
 								</td>
-								<td class="max-w-[200px] truncate px-6 py-5 text-[11px] text-white/60" title={item.description ?? ''}>
+								<td
+									class="max-w-[200px] truncate px-6 py-5 text-[11px] text-white/60"
+									title={item.description ?? ''}
+								>
 									{item.description || '—'}
 								</td>
 								<td class="px-6 py-5 text-[11px] text-white/40">
 									{formatDate(item.createdAt)}
 								</td>
-								<td class="px-6 py-5 text-[11px] {isExpired(item.expiresAt) ? 'text-red-400/70' : 'text-white/40'}">
+								<td
+									class="px-6 py-5 text-[11px] {isExpired(item.expiresAt)
+										? 'text-red-400/70'
+										: 'text-white/40'}"
+								>
 									{formatDate(item.expiresAt)}
 								</td>
 								<td class="px-6 py-5 text-right">
@@ -432,9 +505,19 @@
 											title="Edit Content"
 											class="rounded p-1.5 text-white/50 transition-colors hover:text-amber-400"
 										>
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-												<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-												<path d="m15 5 4 4"/>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												width="16"
+												height="16"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											>
+												<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+												<path d="m15 5 4 4" />
 											</svg>
 										</button>
 										<button
@@ -445,12 +528,22 @@
 											title="Delete Content"
 											class="rounded p-1.5 text-white/50 transition-colors hover:text-red-400"
 										>
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-												<path d="M3 6h18"/>
-												<path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-												<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-												<path d="M10 11v6"/>
-												<path d="M14 11v6"/>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												width="16"
+												height="16"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											>
+												<path d="M3 6h18" />
+												<path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+												<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+												<path d="M10 11v6" />
+												<path d="M14 11v6" />
 											</svg>
 										</button>
 									</div>

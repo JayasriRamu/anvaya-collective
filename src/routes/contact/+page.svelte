@@ -237,9 +237,11 @@
 							{#each Array(totalSteps) as _, i}
 								<button
 									onclick={() => goToStep(i + 1)}
-									class="h-1 rounded-full transition-all {currentStep === i + 1
-										? 'w-10 bg-[#C5A059]'
-										: 'w-5 bg-white/10'}"
+									title="Go to step {i + 1}"
+									aria-label="Go to step {i + 1}"
+									class="h-2.5 rounded-full transition-all duration-300 {currentStep === i + 1
+										? 'w-10 bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.6)]'
+										: 'w-6 border border-white/40 bg-white/20 hover:border-[#C5A059] hover:bg-[#C5A059]/60'}"
 								></button>
 							{/each}
 						</div>
@@ -338,10 +340,10 @@
 										<button
 											type="button"
 											onclick={() => (localUser.ageGroup = age)}
-											class="h-12 border text-xs font-black uppercase transition-all {localUser.ageGroup ===
+											class="h-14 border text-sm font-black uppercase transition-all {localUser.ageGroup ===
 											age
-												? 'border-[#C5A059] bg-[#C5A059] text-black shadow-lg'
-												: 'border-white/10 bg-white/5 text-white/60 hover:border-white/40'}"
+												? 'border-[#C5A059] bg-[#C5A059] text-black shadow-[0_0_14px_rgba(197,160,89,0.45)]'
+												: 'border-white/30 bg-white/10 text-white hover:border-[#C5A059] hover:bg-[#C5A059]/15 hover:text-[#C5A059]'}"
 											>{age}</button
 										>
 									{/each}
@@ -368,13 +370,13 @@
 						</div>
 					{:else if currentStep === 2}
 						<div in:fade class="space-y-12">
-							<h3 class="text-[13px] font-black tracking-[0.3em] text-white/60 uppercase">
+							<h3 class="text-sm font-black tracking-[0.3em] text-white/90 uppercase">
 								02. Body Intelligence
 							</h3>
 							<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 								{#each healthOptions as option}
 									<label
-										class="group flex cursor-pointer items-center gap-3 border border-white/10 bg-white/[0.03] p-4 transition-all hover:border-[#C5A059]"
+										class="group flex cursor-pointer items-center gap-3 border border-white/15 bg-white/[0.06] p-4 transition-all hover:border-[#C5A059]"
 									>
 										<input
 											type="checkbox"
@@ -383,7 +385,7 @@
 											class="h-4 w-4 accent-[#C5A059]"
 										/>
 										<span
-											class="text-[10px] font-black tracking-tight text-white/70 uppercase group-hover:text-white"
+											class="text-sm font-semibold tracking-normal text-white group-hover:text-[#C5A059]"
 											>{option}</span
 										>
 									</label>
@@ -398,7 +400,7 @@
 						</div>
 					{:else if currentStep === 3}
 						<div in:fade class="space-y-10">
-							<h3 class="text-[13px] font-black tracking-[0.3em] text-white/60 uppercase">
+							<h3 class="text-sm font-black tracking-[0.3em] text-white/90 uppercase">
 								03. Track Preference
 							</h3>
 							<div
@@ -466,7 +468,7 @@
 						</div>
 					{:else if currentStep === 5}
 						<div in:fade class="space-y-12">
-							<h3 class="text-[13px] font-black tracking-[0.3em] text-white/60 uppercase">
+							<h3 class="text-sm font-black tracking-[0.3em] text-white/90 uppercase">
 								05. Waiver & Consent
 							</h3>
 							<div

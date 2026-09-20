@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { createAuthClient } from 'better-auth/svelte';
 	import { invalidateAll } from '$app/navigation'; // For the Refresh button
-
-	const authClient = createAuthClient();
 
 	// Props and State
 	let { data } = $props();
@@ -11,16 +8,6 @@
 
 	let showModal = $state(false);
 	let itemToDelete = $state<any>(null);
-
-	async function handleSignOut() {
-		await authClient.signOut({
-			fetchOptions: {
-				onSuccess: () => {
-					window.location.href = '/admin/login';
-				}
-			}
-		});
-	}
 
 	function clearAllCookies() {
 		const cookies = document.cookie.split(';');
@@ -55,39 +42,7 @@
 	}
 </script>
 
-<div
-	class="min-h-screen bg-[#070707] font-sans text-white selection:bg-[#C5A059] selection:text-black"
->
-	<header
-		class="sticky top-0 z-[100] flex items-center justify-between border-b border-white/10 bg-[#0a0a0a]/80 px-8 py-3 backdrop-blur-md"
-	>
-		<div class="flex items-center gap-4">
-			<img
-				src="/images/logo.png"
-				alt="Anvaya"
-				class="h-8 w-auto object-contain brightness-200 grayscale invert"
-			/>
-			<div class="h-4 w-[1px] bg-white/20"></div>
-			<h1 class="font-serif text-sm tracking-[0.2em] text-[#C5A059] uppercase italic">
-				Admin Panel
-			</h1>
-		</div>
-
-		<div class="flex items-center gap-6">
-			<a
-				href="/"
-				class="text-[9px] font-bold tracking-[0.2em] text-white/60 uppercase hover:text-[#C5A059]"
-				>View Site</a
-			>
-			<button
-				onclick={handleSignOut}
-				class="rounded-sm border border-[#ff3e3e] bg-[#ff3e3e]/10 px-5 py-1.5 text-[10px] font-black tracking-[0.1em] text-[#ff3e3e] uppercase transition-all hover:bg-[#ff3e3e] hover:text-white"
-			>
-				Sign Out
-			</button>
-		</div>
-	</header>
-
+<div class="font-sans text-white">
 	{#if showModal}
 		<div
 			class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-sm"
@@ -122,7 +77,7 @@
 
 	<main class="mx-auto max-w-7xl px-8 py-10">
 		<div class="mb-10 flex items-end justify-between border-b border-white/10 pb-8">
-			<div>
+			<div class="border-l-2 border-[#C5A059] pl-5">
 				<p class="text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">
 					Inquiry Volume
 				</p>
@@ -232,9 +187,3 @@
 		</div>
 	</main>
 </div>
-
-<style>
-	:global(.font-serif) {
-		font-family: 'Cinzel', serif;
-	}
-</style>

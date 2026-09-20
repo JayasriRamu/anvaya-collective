@@ -27,11 +27,15 @@
 			class="fixed top-0 z-[100] flex w-full items-center justify-between border-b border-white/5 bg-[#070707]/90 px-8 py-6 backdrop-blur-md md:px-20 md:py-8"
 		>
 			<a href="/" class="group flex items-center gap-3">
-				<img src="/images/logo.png" alt="Logo" class="h-8 w-auto object-contain md:h-14" />
-				<div
-					class="font-serif text-[13px] tracking-[0.1em] whitespace-nowrap text-[#C5A059] uppercase md:text-xl md:tracking-[0.2em]"
-				>
-					Anvaya Collectives
+				<img src="/images/logo.png" alt="Anvaya Logo" class="h-9 w-auto object-contain md:h-10" />
+				<div class="font-serif text-[14px] leading-none whitespace-nowrap uppercase md:text-2xl">
+					<span class="brand-shine mr-1.5 font-bold tracking-[0.1em] italic md:tracking-[0.15em]"
+						>Anvaya</span
+					>
+					<span
+						class="font-semibold tracking-[0.2em] text-white/95 italic transition-colors duration-300 group-hover:text-[#C5A059]"
+						>Collectives</span
+					>
 				</div>
 			</a>
 
@@ -53,27 +57,31 @@
 				<div class="hidden items-center space-x-10 lg:flex">
 					<a
 						href="/"
-						class="text-xs tracking-[0.2em] uppercase {page.url.pathname === '/'
-							? 'font-black text-white'
-							: 'font-medium text-gray-400 hover:text-[#C5A059]'}">Home</a
+						class="relative text-[13px] font-bold tracking-[0.2em] uppercase transition-all after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:bg-[#C5A059] after:transition-all after:duration-300 {page
+							.url.pathname === '/'
+							? 'text-[#C5A059] after:w-full'
+							: 'text-white/95 after:w-0 hover:text-[#C5A059] hover:after:w-full'}">Home</a
 					>
 					<a
 						href="/about"
-						class="text-xs tracking-[0.2em] uppercase {page.url.pathname === '/about'
-							? 'font-black text-white'
-							: 'font-medium text-gray-400 hover:text-[#C5A059]'}">About</a
+						class="relative text-[13px] font-bold tracking-[0.2em] uppercase transition-all after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:bg-[#C5A059] after:transition-all after:duration-300 {page
+							.url.pathname === '/about'
+							? 'text-[#C5A059] after:w-full'
+							: 'text-white/95 after:w-0 hover:text-[#C5A059] hover:after:w-full'}">About</a
 					>
 					<a
 						href="/vision"
-						class="text-xs tracking-[0.2em] uppercase {page.url.pathname === '/vision'
-							? 'font-black text-white'
-							: 'font-medium text-gray-400 hover:text-[#C5A059]'}">The Director</a
+						class="relative text-[13px] font-bold tracking-[0.2em] uppercase transition-all after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:bg-[#C5A059] after:transition-all after:duration-300 {page
+							.url.pathname === '/vision'
+							? 'text-[#C5A059] after:w-full'
+							: 'text-white/95 after:w-0 hover:text-[#C5A059] hover:after:w-full'}">The Director</a
 					>
 					<a
 						href="/courses"
-						class="text-xs tracking-[0.2em] uppercase {page.url.pathname === '/courses'
-							? 'font-black text-white'
-							: 'font-medium text-gray-400 hover:text-[#C5A059]'}">Courses</a
+						class="relative text-[13px] font-bold tracking-[0.2em] uppercase transition-all after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:bg-[#C5A059] after:transition-all after:duration-300 {page
+							.url.pathname === '/courses'
+							? 'text-[#C5A059] after:w-full'
+							: 'text-white/95 after:w-0 hover:text-[#C5A059] hover:after:w-full'}">Courses</a
 					>
 					<a
 						href="/contact"
@@ -83,15 +91,20 @@
 					<a
 						href="/admin"
 						title="Admin Portal"
-						class="ml-2 p-2 text-stone-600 transition-colors hover:text-amber-400"
+						class="ml-2 inline-flex items-center justify-center rounded-md border border-[#C5A059]/50 bg-[#C5A059]/15 p-2 text-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.15)] transition-all hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-black hover:shadow-[0_0_16px_rgba(197,160,89,0.45)]"
 					>
 						<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z"/>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z"
+							/>
 						</svg>
 					</a>
 				</div>
 
-				<button class="p-2 text-white lg:hidden" onclick={toggleMenu}>
+				<button class="p-2 text-white lg:hidden" onclick={toggleMenu} aria-label="Open menu">
 					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
 						><path
 							stroke-linecap="round"
@@ -240,5 +253,36 @@
 <style>
 	:global(.font-serif) {
 		font-family: 'Cinzel', serif;
+	}
+
+	.brand-shine {
+		background-image: linear-gradient(
+			110deg,
+			#9a7b2e 10%,
+			#c5a059 30%,
+			#f4dfa8 50%,
+			#c5a059 70%,
+			#9a7b2e 90%
+		);
+		background-size: 200% 100%;
+		background-clip: text;
+		-webkit-background-clip: text;
+		color: transparent;
+		animation: brand-shine 4.5s linear infinite;
+	}
+
+	@keyframes brand-shine {
+		0% {
+			background-position: 100% 0;
+		}
+		100% {
+			background-position: -100% 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.brand-shine {
+			animation: none;
+		}
 	}
 </style>

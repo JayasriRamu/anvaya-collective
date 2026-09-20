@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 83" width="260" height="83" role="img" aria-label="Anvaya logo">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0d391"/>
+      <stop offset="0.5" stop-color="#d9b25e"/>
+      <stop offset="1" stop-color="#c0953f"/>
+    </linearGradient>
+  </defs>
+  <!-- base bar -->
+  <rect x="4" y="68" width="252" height="11" rx="2.5" fill="url(#gold)"/>
+  <!-- decorative band -->
+  <rect x="16" y="60" width="228" height="7" rx="1.5" fill="url(#gold)" opacity="0.85"/>
+  <!-- seven temple pillars: diamond capital + capital block + shaft -->
+  <g fill="url(#gold)">
+    <g>
+      <polygon points="22,1 28,9 22,17 16,9"/>
+      <rect x="15" y="17" width="14" height="7" rx="1"/>
+      <rect x="18" y="24" width="8" height="38"/>
+    </g>
+    <g>
+      <polygon points="55,1 61,9 55,17 49,9"/>
+      <rect x="48" y="17" width="14" height="7" rx="1"/>
+      <rect x="51" y="24" width="8" height="38"/>
+    </g>
+    <g>
+      <polygon points="88,1 94,9 88,17 82,9"/>
+      <rect x="81" y="17" width="14" height="7" rx="1"/>
+      <rect x="84" y="24" width="8" height="38"/>
+    </g>
+    <g>
+      <polygon points="121,1 127,9 121,17 115,9"/>
+      <rect x="114" y="17" width="14" height="7" rx="1"/>
+      <rect x="117" y="24" width="8" height="38"/>
+    </g>
+    <g>
+      <polygon points="154,1 160,9 154,17 148,9"/>
+      <rect x="147" y="17" width="14" height="7" rx="1"/>
+      <rect x="150" y="24" width="8" height="38"/>
+    </g>
+    <g>
+      <polygon points="187,1 193,9 187,17 181,9"/>
+      <rect x="180" y="17" width="14" height="7" rx="1"/>
+      <rect x="183" y="24" width="8" height="38"/>
+    </g>
+    <g>
+      <polygon points="220,1 226,9 220,17 214,9"/>
+      <rect x="213" y="17" width="14" height="7" rx="1"/>
+      <rect x="216" y="24" width="8" height="38"/>
+    </g>
+  </g>
+</svg>
