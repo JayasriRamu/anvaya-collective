@@ -89,8 +89,9 @@
 
 	function validateMobile(event: Event) {
 		const input = event.target as HTMLInputElement;
-		input.value = input.value.replace(/[^\d+]/g, '');
-		localUser.phone = input.value;
+		const cleaned = input.value.replace(/\D/g, '').slice(0, 10);
+		input.value = cleaned;
+		localUser.phone = cleaned;
 	}
 
 	async function handleSubmit(event: SubmitEvent) {
@@ -109,10 +110,15 @@
 		try {
 			const formElement = event.currentTarget as HTMLFormElement;
 			const formData = new FormData(formElement);
+			formData.set('name', submissionData.name);
+			formData.set('mobile', submissionData.phone);
+			formData.set('message', submissionData.medications || '');
 			formData.set('interest', submissionData.interest);
 			formData.set('healthHistory', submissionData.healthHistory);
 			formData.set('location', localUser.location);
 			formData.set('ageGroup', localUser.ageGroup);
+			formData.set('consent', 'on');
+			formData.set('rememberMe', rememberMe ? 'on' : '');
 
 			const response = await fetch(formElement.action, { method: 'POST', body: formData });
 			if (response.ok) {
@@ -123,6 +129,8 @@
 					formSubmitted = true;
 					hasExistingProfile = true;
 				}, 500);
+			} else {
+				isSubmitting = false;
 			}
 		} catch (e) {
 			isSubmitting = false;
@@ -283,6 +291,8 @@
 											bind:value={localUser.phone}
 											required
 											oninput={validateMobile}
+											maxlength="10"
+											inputmode="numeric"
 											class="w-full bg-transparent py-1 text-xl font-light text-white outline-none"
 										/>
 									</div>

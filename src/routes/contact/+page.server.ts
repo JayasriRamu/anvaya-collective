@@ -59,7 +59,8 @@ export const actions = {
 				interest,
 				ageGroup,
 				message,
-				location // Ensure this exists in your schema!
+				location, // Ensure this exists in your schema!
+				consent // Store the research consent toggle
 			};
 
 			if (existing.length > 0) {
