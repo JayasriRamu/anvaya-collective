@@ -237,21 +237,32 @@
 				</div>
 			{:else}
 				<header class="mb-8 border-b border-white/10 pb-6">
-					<div class="mb-4 flex items-center justify-between">
+					<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
 						<span class="text-[11px] font-black tracking-[0.3em] text-[#C5A059] uppercase"
 							>Step {currentStep} / {totalSteps}</span
 						>
-						<div class="flex gap-2">
-							{#each Array(totalSteps) as _, i}
+						<div class="flex items-center gap-3">
+							<div class="flex gap-2">
+								{#each Array(totalSteps) as _, i}
+									<button
+										onclick={() => goToStep(i + 1)}
+										title="Go to step {i + 1}"
+										aria-label="Go to step {i + 1}"
+										class="h-2.5 rounded-full transition-all duration-300 {currentStep === i + 1
+											? 'w-10 bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.6)]'
+											: 'w-6 border border-white/40 bg-white/20 hover:border-[#C5A059] hover:bg-[#C5A059]/60'}"
+									></button>
+								{/each}
+							</div>
+							{#if isEditing}
 								<button
-									onclick={() => goToStep(i + 1)}
-									title="Go to step {i + 1}"
-									aria-label="Go to step {i + 1}"
-									class="h-2.5 rounded-full transition-all duration-300 {currentStep === i + 1
-										? 'w-10 bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.6)]'
-										: 'w-6 border border-white/40 bg-white/20 hover:border-[#C5A059] hover:bg-[#C5A059]/60'}"
-								></button>
-							{/each}
+									type="submit"
+									form="inquiry-form"
+									disabled={isSubmitting}
+									class="bg-[#C5A059] px-5 py-2 text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-lg transition-all hover:bg-white disabled:opacity-50"
+									>Finish</button
+								>
+							{/if}
 						</div>
 					</div>
 					<h1 class="font-serif text-4xl tracking-tight text-[#C5A059] italic md:text-6xl">
@@ -259,7 +270,13 @@
 					</h1>
 				</header>
 
-				<form method="POST" action="?/submit" onsubmit={handleSubmit} class="space-y-12">
+				<form
+					id="inquiry-form"
+					method="POST"
+					action="?/submit"
+					onsubmit={handleSubmit}
+					class="space-y-12"
+				>
 					{#if currentStep === 1}
 						<div in:fade class="space-y-10">
 							<div class="grid grid-cols-1 gap-10 md:grid-cols-2">
