@@ -225,7 +225,7 @@
 					<div class="flex flex-col gap-4 pt-4 sm:flex-row">
 						<button
 							onclick={() => (isEditing = true)}
-							class="flex-1 bg-[#C5A059] py-4 text-xs font-black text-black uppercase transition-all hover:bg-white"
+							class="bg-[#C5A059] px-8 py-4 text-xs font-black text-black uppercase transition-all hover:bg-white"
 							>Edit Details</button
 						>
 						<button
