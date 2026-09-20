@@ -259,9 +259,19 @@
 									type="submit"
 									form="inquiry-form"
 									disabled={isSubmitting}
-									class="bg-[#C5A059] px-5 py-2 text-[10px] font-black tracking-[0.2em] text-black uppercase shadow-lg transition-all hover:bg-white disabled:opacity-50"
-									>Finish</button
+									class="group inline-flex items-center gap-2 border border-[#C5A059]/70 bg-[#C5A059]/10 px-5 py-2 text-[10px] font-black tracking-[0.2em] text-[#C5A059] uppercase shadow-lg transition-all hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-black hover:shadow-[0_0_18px_rgba(197,160,89,0.45)] disabled:opacity-50 disabled:hover:border-[#C5A059]/70 disabled:hover:bg-[#C5A059]/10 disabled:hover:text-[#C5A059]"
 								>
+									<svg
+										class="h-3.5 w-3.5 transition-transform group-hover:scale-110"
+										viewBox="0 0 20 20"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.5"
+									>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M4 10l4 4L16 6" />
+									</svg>
+									Accept
+								</button>
 							{/if}
 						</div>
 					</div>
