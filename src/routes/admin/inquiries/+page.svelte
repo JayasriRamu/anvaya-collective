@@ -32,9 +32,9 @@
 	}
 
 	// Helper for date formatting
-	function formatDate(dateStr: string) {
-		if (!dateStr) return '—';
-		return new Date(dateStr).toLocaleDateString('en-IN', {
+	function formatDate(date: Date | string | null | undefined) {
+		if (!date) return '—';
+		return new Date(date).toLocaleDateString('en-IN', {
 			day: '2-digit',
 			month: 'short',
 			year: 'numeric'
@@ -132,15 +132,15 @@
 								>
 									{item.name ?? 'Guest'}
 								</div>
-								{#if item.email}
+								{#if item.phone}
 									<a
-										href="tel:{item.email}"
+										href="tel:{item.phone}"
 										class="mt-1 inline-flex items-center gap-2 text-[11px] font-bold text-green-400 hover:text-green-300"
 									>
 										<span
 											class="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"
 										></span>
-										{item.email}
+										{item.phone}
 									</a>
 								{/if}
 							</td>
