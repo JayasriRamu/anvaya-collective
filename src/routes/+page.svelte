@@ -29,12 +29,21 @@
 
 {#if activePoster && showPosterModal}
 	<div
+		role="presentation"
 		class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
 		onclick={() => (showPosterModal = false)}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') showPosterModal = false;
+		}}
 	>
 		<div
+			role="dialog"
+			aria-modal="true"
+			aria-label={activePoster.title}
+			tabindex="-1"
 			class="relative w-full max-w-lg border border-amber-900/50 bg-stone-900 p-6 shadow-2xl"
 			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
 		>
 			<button
 				onclick={() => (showPosterModal = false)}

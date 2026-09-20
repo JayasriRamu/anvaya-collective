@@ -188,6 +188,7 @@
 			<span class="flex-1 text-sm font-medium">{toast.message}</span>
 			<button
 				onclick={dismissToast}
+				aria-label="Dismiss"
 				class="shrink-0 opacity-60 transition-opacity hover:opacity-100"
 			>
 				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -568,12 +569,21 @@
 
 {#if showDeleteModal}
 	<div
+		role="presentation"
 		class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
 		onclick={() => (showDeleteModal = false)}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') showDeleteModal = false;
+		}}
 	>
 		<div
+			role="dialog"
+			aria-modal="true"
+			aria-label="Confirm deletion"
+			tabindex="-1"
 			class="w-full max-w-sm border border-amber-900/50 bg-stone-900 p-8 shadow-2xl"
 			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
 		>
 			<h3 class="font-serif text-xl text-[#C5A059] uppercase italic">Confirm Deletion</h3>
 			<p class="mt-3 text-sm leading-relaxed text-white/60">

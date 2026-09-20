@@ -258,9 +258,10 @@
 								<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
 									<label
 										class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
-										>Full Name</label
+										for="full-name">Full Name</label
 									>
 									<input
+										id="full-name"
 										type="text"
 										bind:value={localUser.name}
 										required
@@ -270,13 +271,14 @@
 								<div class="border-b border-white/20 pb-3 focus-within:border-[#C5A059]">
 									<label
 										class="mb-1 block text-[11px] font-black tracking-widest text-white/40 uppercase"
-										>WhatsApp</label
+										for="whatsapp">WhatsApp</label
 									>
 									<div class="flex items-center gap-3">
 										<span class="text-xl font-light text-[#C5A059]"
 											>{localUser.location === 'Outside' ? '+' : '+91'}</span
 										>
 										<input
+											id="whatsapp"
 											type="tel"
 											bind:value={localUser.phone}
 											required
@@ -288,11 +290,13 @@
 							</div>
 
 							<div class="max-w-sm space-y-3">
-								<label class="text-[11px] font-black tracking-widest text-white/40 uppercase"
-									>Region</label
+								<label
+									class="text-[11px] font-black tracking-widest text-white/40 uppercase"
+									for="region">Region</label
 								>
 								<div class="relative">
 									<button
+										id="region"
 										type="button"
 										onclick={() => (isLocationOpen = !isLocationOpen)}
 										class="flex w-full items-center justify-between border border-white/20 bg-[#151515] p-4 text-base font-bold text-white shadow-xl"
@@ -332,8 +336,8 @@
 							</div>
 
 							<div class="space-y-6">
-								<label class="text-[11px] font-black tracking-widest text-white/40 uppercase"
-									>Select Age Group</label
+								<span class="text-[11px] font-black tracking-widest text-white/40 uppercase"
+									>Select Age Group</span
 								>
 								<div class="grid grid-cols-4 gap-2 sm:grid-cols-7">
 									{#each ageGroups as age}
@@ -488,9 +492,10 @@
 							>
 								<label
 									class="mb-1 block text-[11px] font-black tracking-widest text-white/50 uppercase"
-									>Digital Signature</label
+									for="signature">Digital Signature</label
 								>
 								<input
+									id="signature"
 									type="text"
 									bind:value={localUser.signature}
 									required

@@ -4,10 +4,13 @@ import type { PageServerLoad } from './$types';
 import { auth } from '$lib/server/auth';
 
 export const load: PageServerLoad = async (event) => {
-	if (!event.locals.user) {
+	const session = await auth.api.getSession({
+		headers: event.request.headers
+	});
+	if (!session) {
 		return redirect(302, '/demo/better-auth/login');
 	}
-	return { user: event.locals.user };
+	return { user: session.user };
 };
 
 export const actions: Actions = {
