@@ -270,7 +270,7 @@
 									>
 										<path stroke-linecap="round" stroke-linejoin="round" d="M4 10l4 4L16 6" />
 									</svg>
-									Accept
+									Finalize
 								</button>
 							{/if}
 						</div>
