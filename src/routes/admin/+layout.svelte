@@ -66,12 +66,12 @@
 					></div>
 					<div>
 						<h1
-							class="font-serif text-base tracking-[0.2em] text-[#C5A059] uppercase italic drop-shadow-[0_0_10px_rgba(197,160,89,0.4)]"
+							class="font-serif text-xl font-bold tracking-[0.15em] text-[#C5A059] uppercase italic drop-shadow-[0_0_12px_rgba(197,160,89,0.55)]"
 						>
 							Admin Panel
 						</h1>
 						{#if data.user}
-							<p class="mt-0.5 text-[9px] font-bold tracking-[0.25em] text-white/50 uppercase">
+							<p class="mt-1 text-[11px] font-semibold tracking-[0.08em] text-white/95">
 								{data.user.email}
 							</p>
 						{/if}

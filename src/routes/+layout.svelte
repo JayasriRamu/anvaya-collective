@@ -1,11 +1,18 @@
 <script lang="ts">
 	import './layout.css';
 	import { page } from '$app/state';
+	import { env } from '$env/dynamic/public';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 
 	let { data, children }: { data: LayoutData; children: any } = $props();
 	let isMenuOpen = $state(false);
+
+	// Blog. Points at /blog until an external blog URL is configured,
+	// then the menu item goes straight out to that blog.
+	const blogUrl = env.PUBLIC_BLOG_URL?.trim();
+	const blogHref = blogUrl || '/blog';
+	const blogExternal = Boolean(blogUrl);
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
@@ -84,6 +91,16 @@
 							: 'text-white/95 after:w-0 hover:text-[#C5A059] hover:after:w-full'}">Courses</a
 					>
 					<a
+						href={blogHref}
+						target={blogExternal ? '_blank' : undefined}
+						rel={blogExternal ? 'noopener noreferrer' : undefined}
+						title={blogExternal ? 'Opens in a new tab' : undefined}
+						class="relative text-[13px] font-bold tracking-[0.2em] uppercase transition-all after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:bg-[#C5A059] after:transition-all after:duration-300 {page
+							.url.pathname === '/blog' && !blogExternal
+							? 'text-[#C5A059] after:w-full'
+							: 'text-white/95 after:w-0 hover:text-[#C5A059] hover:after:w-full'}">Blog</a
+					>
+					<a
 						href="/contact"
 						class="bg-[#C5A059] px-6 py-2 text-[10px] font-black text-black uppercase transition-colors hover:bg-white"
 						>Connect</a
@@ -140,6 +157,13 @@
 					href="/courses"
 					class="font-serif text-2xl tracking-widest uppercase"
 					onclick={toggleMenu}>Courses</a
+				>
+				<a
+					href={blogHref}
+					target={blogExternal ? '_blank' : undefined}
+					rel={blogExternal ? 'noopener noreferrer' : undefined}
+					class="font-serif text-2xl tracking-widest uppercase"
+					onclick={toggleMenu}>Blog</a
 				>
 				<a
 					href="/contact"

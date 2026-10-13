@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { safeUrl } from '$lib/content';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
 	let activePoster = $derived(data?.activePoster ?? null);
 	let recentItems = $derived(data?.recentItems ?? []);
-	let showPosterModal = $state(true);
+	let showPosterModal = $state(false);
 
 	function formatDate(date: string | Date | null) {
 		if (!date) return '—';
@@ -18,12 +19,33 @@
 	}
 
 	onMount(() => {
-		if (activePoster) {
-			const timer = setTimeout(() => {
-				showPosterModal = false;
-			}, 5000);
-			return () => clearTimeout(timer);
-		}
+		if (!activePoster) return;
+
+		// Poster pop-up, once per browser session: it never blocks clicks on
+		// repeat visits. Dismisses on scroll/touch as well as the close button,
+		// so it can't swallow the first interaction with the page below it.
+		const key = 'anvaya-poster-shown';
+		if (sessionStorage.getItem(key)) return;
+		sessionStorage.setItem(key, '1');
+
+		showPosterModal = true;
+
+		const timer = setTimeout(() => {
+			showPosterModal = false;
+		}, 5000);
+
+		const dismiss = () => {
+			showPosterModal = false;
+			clearTimeout(timer);
+		};
+		window.addEventListener('scroll', dismiss, { once: true, passive: true });
+		window.addEventListener('touchstart', dismiss, { once: true, passive: true });
+
+		return () => {
+			clearTimeout(timer);
+			window.removeEventListener('scroll', dismiss);
+			window.removeEventListener('touchstart', dismiss);
+		};
 	});
 </script>
 
@@ -53,7 +75,7 @@
 				X
 			</button>
 			<img
-				src={activePoster.posterImage}
+				src={safeUrl(activePoster.posterImage) ?? ''}
 				alt={activePoster.title}
 				class="w-full rounded border border-amber-900/30 object-cover"
 			/>
@@ -77,7 +99,7 @@
 					</button>
 					{#if activePoster.url}
 						<a
-							href={activePoster.url}
+							href={safeUrl(activePoster.url)}
 							target="_blank"
 							class="block flex-1 bg-[#C5A059] py-2.5 text-center text-xs font-black text-black uppercase transition-all hover:bg-white"
 						>
@@ -175,7 +197,12 @@
 							</span>
 						</div>
 						{#if item.url}
-							<a href={item.url} target="_blank" rel="noopener noreferrer" class="no-underline">
+							<a
+								href={safeUrl(item.url)}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="no-underline"
+							>
 								<h3
 									class="text-base font-bold text-white transition-colors group-hover:text-[#C5A059]"
 								>
@@ -196,11 +223,13 @@
 						{/if}
 						<div class="mt-auto flex items-center justify-between pt-4">
 							<span class="text-[10px] font-bold tracking-widest text-white/30 uppercase">
-								{formatDate(item.createdAt)}
+								{item.expiresAt
+									? `Event ${formatDate(item.expiresAt)}`
+									: `Posted ${formatDate(item.createdAt)}`}
 							</span>
 							{#if item.url}
 								<a
-									href={item.url}
+									href={safeUrl(item.url)}
 									target="_blank"
 									rel="noopener noreferrer"
 									class="inline-flex items-center gap-1 rounded-sm border border-[#C5A059]/60 px-3 py-1 text-[10px] font-black tracking-widest text-[#C5A059] uppercase transition-all hover:bg-[#C5A059] hover:text-black"

@@ -74,6 +74,17 @@ export const content = sqliteTable('content', {
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
+/**
+ * Content types the admin has removed from the pick list. Content rows keep
+ * their type value (still visible in the library), but the name is no longer
+ * offered as a pill/suggestion until a new item is saved with that type again.
+ * Stored lowercase so deletions match regardless of typing.
+ */
+export const deletedContentTypes = sqliteTable('deleted_content_types', {
+	name: text('name').primaryKey(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+});
+
 export const verification = sqliteTable('verification', {
 	id: text('id').primaryKey(),
 	identifier: text('identifier').notNull(),

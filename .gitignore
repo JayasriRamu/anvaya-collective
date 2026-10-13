@@ -12,6 +12,12 @@ node_modules
 .DS_Store
 Thumbs.db
 
+# Editors (swap/backup files may contain secrets)
+*.swp
+*.swo
+*.kate-swp
+*~
+
 # Env
 .env
 .env.*
